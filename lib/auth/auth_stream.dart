@@ -1,4 +1,4 @@
-import 'package:debtsimulator/pages/main_page.dart';
+import 'package:debtsimulator/pages/main_page_withAuth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -17,16 +17,20 @@ class AuthStream extends StatelessWidget {
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: LoadingAnimationWidget.discreteCircle(
-                    color: Colors.blue, size: 40.0),
+              return Scaffold(
+                body: Center(
+                  child: LoadingAnimationWidget.discreteCircle(
+                      color: Colors.blue, size: 40.0),
+                ),
               );
-            } else if (snapshot.hasData) {
-              return const MainPage();
+            } else if (snapshot.hasData && !value.isGoogleOAuthLoading) {
+              return const MainPageWithAuth();
             } else if (value.isLoading) {
-              return Center(
-                child: LoadingAnimationWidget.discreteCircle(
-                    color: Colors.blue, size: 40.0),
+              return Scaffold(
+                body: Center(
+                  child: LoadingAnimationWidget.discreteCircle(
+                      color: Colors.blue, size: 40.0),
+                ),
               );
             } else {
               return const LoginPage();
