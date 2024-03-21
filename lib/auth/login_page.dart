@@ -1,4 +1,4 @@
-import 'dart:async';
+import 'package:debtsimulator/auth/google_auth_page.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -29,27 +29,46 @@ class _LoginPageState extends State<LoginPage> {
 
     return SafeArea(
         child: Scaffold(
-      backgroundColor:Colors.white,
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         physics: const NeverScrollableScrollPhysics(),
-        child: Stack(
-          children: [
-            Container(
-              margin: const EdgeInsets.fromLTRB(25, 150, 25, 150),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.black , width: 1.0),
-                borderRadius: BorderRadius.circular(32.0),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.black,
-                    blurRadius: 4,
-                    offset: Offset(4, 8), // Shadow position
-                  ),
-                ],
+        child: Container(
+          margin: const EdgeInsets.fromLTRB(25, 150, 25, 150),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: Colors.black, width: 1.0),
+            borderRadius: BorderRadius.circular(32.0),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black,
+                blurRadius: 4,
+                offset: Offset(4, 8), // Shadow position
               ),
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 50),
-              child: _isSignIn
+            ],
+          ),
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 50),
+          child: Column(
+            children: [
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SignInDemo(),
+                      ));
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.all(5.0),
+                  elevation: 5,
+                  shadowColor: Colors.black,
+                  backgroundColor: Colors.white,
+                ),
+                child: const Text(
+                  "Sign In with Google",
+                  style: TextStyle(color: Colors.black, fontSize: 16),
+                ),
+              ),
+              _isSignIn
                   ? Column(
                       children: [
                         const Text(
@@ -74,8 +93,8 @@ class _LoginPageState extends State<LoginPage> {
                               RichText(
                                   text: TextSpan(
                                       text: "forgot password?",
-                                      style: const TextStyle(
-                                          color: Colors.blue),
+                                      style:
+                                          const TextStyle(color: Colors.blue),
                                       recognizer: TapGestureRecognizer()
                                         ..onTap = () {
                                           if (inEmailTextController
@@ -118,21 +137,19 @@ class _LoginPageState extends State<LoginPage> {
                                         inEmailTextController.text,
                                         inPassTextController.text,
                                         userUsecase);
-                                    await Future.delayed(
-                                        const Duration(seconds: 1));
+
                                     authUseCase.changeBool(false);
                                   },
                                   style: ElevatedButton.styleFrom(
                                     padding: const EdgeInsets.all(5.0),
                                     elevation: 5,
                                     shadowColor: Colors.black,
-                                    backgroundColor: Colors.black,
+                                    backgroundColor: Colors.white,
                                   ),
                                   child: const Text(
                                     "SIGN IN",
                                     style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 24),
+                                        color: Colors.black, fontSize: 24),
                                   ),
                                 ),
                               ),
@@ -148,12 +165,10 @@ class _LoginPageState extends State<LoginPage> {
                                   children: <TextSpan>[
                                 const TextSpan(
                                     text: "Create a new account ",
-                                    style: TextStyle(
-                                        color: Colors.black)),
+                                    style: TextStyle(color: Colors.black)),
                                 TextSpan(
                                     text: "Here",
-                                    style: const TextStyle(
-                                        color: Colors.blue),
+                                    style: const TextStyle(color: Colors.blue),
                                     recognizer: TapGestureRecognizer()
                                       ..onTap = () {
                                         _isSignIn = !_isSignIn;
@@ -194,21 +209,19 @@ class _LoginPageState extends State<LoginPage> {
                                         upEmailTextController.text,
                                         upPassTextController.text,
                                         userUsecase);
-                                    await Future.delayed(
-                                        const Duration(seconds: 1));
+
                                     authUseCase.changeBool(false);
                                   },
                                   style: ElevatedButton.styleFrom(
                                     padding: const EdgeInsets.all(5.0),
                                     elevation: 5,
                                     shadowColor: Colors.black,
-                                    backgroundColor: Colors.black,
+                                    backgroundColor: Colors.white,
                                   ),
                                   child: const Text(
                                     "SIGN UP",
                                     style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 24),
+                                        color: Colors.black, fontSize: 24),
                                   ),
                                 ),
                               ),
@@ -224,12 +237,10 @@ class _LoginPageState extends State<LoginPage> {
                                   children: <TextSpan>[
                                 const TextSpan(
                                     text: "Already have an account? ",
-                                    style: TextStyle(
-                                        color: Colors.black)),
+                                    style: TextStyle(color: Colors.black)),
                                 TextSpan(
                                     text: "Login",
-                                    style: const TextStyle(
-                                        color: Colors.blue),
+                                    style: const TextStyle(color: Colors.blue),
                                     recognizer: TapGestureRecognizer()
                                       ..onTap = () {
                                         _isSignIn = !_isSignIn;
@@ -239,8 +250,8 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ],
                     ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     ));
@@ -266,7 +277,7 @@ class _LoginPageState extends State<LoginPage> {
         style: const TextStyle(color: Colors.black),
         decoration: InputDecoration(
             filled: true,
-            fillColor:Colors.white,
+            fillColor: Colors.white,
             enabledBorder: OutlineInputBorder(
               borderSide: const BorderSide(color: Colors.black),
               borderRadius: BorderRadius.circular(32.0),

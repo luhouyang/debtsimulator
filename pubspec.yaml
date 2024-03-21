@@ -19,6 +19,7 @@ dependencies:
   provider: ^6.1.2
   loading_animation_widget: ^1.2.1
   email_validator: ^2.1.17
+  google_sign_in: ^6.2.1
 
 dev_dependencies:
   flutter_test:
