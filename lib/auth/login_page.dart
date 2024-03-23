@@ -39,6 +39,8 @@ class _LoginPageState extends State<LoginPage> {
 
   bool _isSignIn = true;
 
+  bool buttonPressed = false;
+
   @override
   void initState() {
     super.initState();
@@ -70,24 +72,13 @@ class _LoginPageState extends State<LoginPage> {
 
     return SafeArea(
         child: Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color.fromARGB(255, 229, 229, 229),
       body: SingleChildScrollView(
         physics: const NeverScrollableScrollPhysics(),
         child: Container(
           margin: const EdgeInsets.fromLTRB(25, 75, 25, 150),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(color: Colors.black, width: 1.0),
-            borderRadius: BorderRadius.circular(32.0),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.black,
-                blurRadius: 4,
-                offset: Offset(4, 8), // Shadow position
-              ),
-            ],
-          ),
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 50),
+          color: const Color.fromARGB(255, 229, 229, 229),
+          padding: const EdgeInsets.fromLTRB(10, 5, 10, 50),
           child: Column(
             children: [
               _isSignIn
@@ -104,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
                           height: 30,
                         ),
                         signInWithGoogleButton(),
-                        const Divider(color: Colors.black, height: 2.0),
+                        orSignInWithWidget(),
                         inputTextWidget(
                             "email", emailVerify, inEmailTextController),
                         inputTextWidget(
@@ -117,34 +108,60 @@ class _LoginPageState extends State<LoginPage> {
                               child: Padding(
                                 padding:
                                     const EdgeInsets.fromLTRB(0, 24, 0, 16),
-                                child: ElevatedButton(
-                                  onPressed: () async {
-                                    authUseCase.changeLoadingBool(true);
-                                    await FirebaseAuthServices().signIn(
-                                        context,
-                                        inEmailTextController.text,
-                                        inPassTextController.text,
-                                        userUsecase);
+                                child: Container(
+                                  decoration: BoxDecoration(boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.black,
+                                        blurRadius: 0,
+                                        blurStyle: BlurStyle.solid,
+                                        offset: buttonPressed
+                                            ? const Offset(0, 0)
+                                            : const Offset(-6, 6))
+                                  ]),
+                                  child: ElevatedButton(
+                                    onPressed: () async {
+                                      setState(() {
+                                        buttonPressed = true;
+                                      });
+                                      authUseCase.changeLoadingBool(true);
+                                      await FirebaseAuthServices().signIn(
+                                          context,
+                                          inEmailTextController.text,
+                                          inPassTextController.text,
+                                          userUsecase);
 
-                                    authUseCase.changeLoadingBool(false);
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    padding: const EdgeInsets.all(5.0),
-                                    elevation: 5,
-                                    shadowColor: Colors.black,
-                                    backgroundColor: Colors.white,
-                                  ),
-                                  child: const Text(
-                                    "SIGN IN",
-                                    style: TextStyle(
-                                        color: Colors.black, fontSize: 24),
+                                      authUseCase.changeLoadingBool(false);
+                                      if (!mounted) return;
+                                      setState(() {
+                                        buttonPressed = false;
+                                      });
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      padding: buttonPressed
+                                          ? const EdgeInsets.fromLTRB(
+                                              6, 9, 6, 9)
+                                          : const EdgeInsets.all(8),
+                                      elevation: 5,
+                                      shape: BeveledRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(0)),
+                                      shadowColor: Colors.transparent,
+                                      backgroundColor: const Color.fromARGB(
+                                          255, 219, 254, 1),
+                                    ),
+                                    child: const Text(
+                                      "SIGN IN",
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 24),
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        const Divider(color: Colors.black, height: 2.0),
+                        const Divider(
+                            color: Colors.black, thickness: 1.5, height: 3.0),
                         createNewAccountText(),
                       ],
                     )
@@ -161,7 +178,7 @@ class _LoginPageState extends State<LoginPage> {
                           height: 30,
                         ),
                         signInWithGoogleButton(),
-                        const Divider(color: Colors.black, height: 2.0),
+                        orSignInWithWidget(),
                         inputTextWidget(
                             "email", emailVerify, upEmailTextController),
                         inputTextWidget(
@@ -173,34 +190,60 @@ class _LoginPageState extends State<LoginPage> {
                               child: Padding(
                                 padding:
                                     const EdgeInsets.fromLTRB(0, 24, 0, 16),
-                                child: ElevatedButton(
-                                  onPressed: () async {
-                                    authUseCase.changeLoadingBool(true);
-                                    await FirebaseAuthServices().signUp(
-                                        context,
-                                        upEmailTextController.text,
-                                        upPassTextController.text,
-                                        userUsecase);
+                                child: Container(
+                                  decoration: BoxDecoration(boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.black,
+                                        blurRadius: 0,
+                                        blurStyle: BlurStyle.solid,
+                                        offset: buttonPressed
+                                            ? const Offset(0, 0)
+                                            : const Offset(-6, 6))
+                                  ]),
+                                  child: ElevatedButton(
+                                    onPressed: () async {
+                                      setState(() {
+                                        buttonPressed = true;
+                                      });
+                                      authUseCase.changeLoadingBool(true);
+                                      await FirebaseAuthServices().signUp(
+                                          context,
+                                          upEmailTextController.text,
+                                          upPassTextController.text,
+                                          userUsecase);
 
-                                    authUseCase.changeLoadingBool(false);
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    padding: const EdgeInsets.all(5.0),
-                                    elevation: 5,
-                                    shadowColor: Colors.black,
-                                    backgroundColor: Colors.white,
-                                  ),
-                                  child: const Text(
-                                    "SIGN UP",
-                                    style: TextStyle(
-                                        color: Colors.black, fontSize: 24),
+                                      authUseCase.changeLoadingBool(false);
+                                      if (!mounted) return;
+                                      setState(() {
+                                        buttonPressed = false;
+                                      });
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      padding: buttonPressed
+                                          ? const EdgeInsets.fromLTRB(
+                                              6, 9, 6, 9)
+                                          : const EdgeInsets.all(8),
+                                      elevation: 5,
+                                      shape: BeveledRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(0)),
+                                      shadowColor: Colors.transparent,
+                                      backgroundColor: const Color.fromARGB(
+                                          255, 219, 254, 1),
+                                    ),
+                                    child: const Text(
+                                      "SIGN UP",
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 24),
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        const Divider(color: Colors.black, height: 2.0),
+                        const Divider(
+                            color: Colors.black, thickness: 1.5, height: 3.0),
                         loginWithAccountText(),
                       ],
                     ),
@@ -238,19 +281,63 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget signInWithGoogleButton() {
-    return ElevatedButton(
-      onPressed: () async {
-        _handleSignIn();
-      },
-      style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.all(5.0),
-        elevation: 5,
-        shadowColor: Colors.black,
-        backgroundColor: Colors.white,
+    return Container(
+      decoration: BoxDecoration(boxShadow: [
+        BoxShadow(
+            color: Colors.black,
+            blurRadius: 0,
+            blurStyle: BlurStyle.solid,
+            offset: buttonPressed ? const Offset(0, 0) : const Offset(-6, 6))
+      ]),
+      child: ElevatedButton(
+        onPressed: () async {
+          setState(() {
+            buttonPressed = true;
+          });
+          _handleSignIn();
+          setState(() {
+            buttonPressed = false;
+          });
+        },
+        style: ElevatedButton.styleFrom(
+          padding: buttonPressed
+              ? const EdgeInsets.fromLTRB(6, 9, 6, 9)
+              : const EdgeInsets.all(8),
+          elevation: 5,
+          shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(0)),
+          shadowColor: Colors.transparent,
+          backgroundColor: const Color.fromARGB(255, 0, 132, 255),
+        ),
+        child: Text(
+          _isSignIn ? "Sign In with Google" : "Sign Up with Google",
+          style: const TextStyle(color: Colors.black, fontSize: 24),
+        ),
       ),
-      child: const Text(
-        "Sign In with Google",
-        style: TextStyle(color: Colors.lightBlue, fontSize: 16),
+    );
+  }
+
+  Widget orSignInWithWidget() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 50, bottom: 50),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Expanded(
+            child: Container(
+              decoration:
+                  BoxDecoration(border: Border.all(color: Colors.black)),
+            ),
+          ),
+          const Text("   Or Sign In With   ",
+              style: TextStyle(color: Colors.black)),
+          Expanded(
+            child: Container(
+              decoration:
+                  BoxDecoration(border: Border.all(color: Colors.black)),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -268,21 +355,30 @@ class _LoginPageState extends State<LoginPage> {
   Widget inputTextWidget(
       String hint, Function validator, TextEditingController controller) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-      child: TextFormField(
-        validator: (value) => validator(value),
-        controller: controller,
-        style: const TextStyle(color: Colors.black),
-        decoration: InputDecoration(
-            filled: true,
-            fillColor: Colors.white,
-            enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: Colors.black),
-              borderRadius: BorderRadius.circular(32.0),
-            ),
-            focusColor: Colors.blue,
-            hintText: hint,
-            hintStyle: const TextStyle(color: Colors.black)),
+      padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+      child: Container(
+        decoration: const BoxDecoration(boxShadow: [
+          BoxShadow(
+              color: Colors.black,
+              blurRadius: 0,
+              blurStyle: BlurStyle.solid,
+              offset: Offset(-6, 6))
+        ]),
+        child: TextFormField(
+          validator: (value) => validator(value),
+          controller: controller,
+          style: const TextStyle(color: Colors.black),
+          decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.white,
+              enabledBorder: OutlineInputBorder(
+                borderSide: const BorderSide(color: Colors.black),
+                borderRadius: BorderRadius.circular(0),
+              ),
+              focusColor: Colors.blue,
+              hintText: hint,
+              hintStyle: const TextStyle(color: Colors.black)),
+        ),
       ),
     );
   }

@@ -6,6 +6,10 @@ class FirebaseAuthServices {
   Future<void> signUp(BuildContext context, String email, String password,
       UserUsecase userUsecase) async {
     try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
       debugPrint("SIGNING UP");
     } catch (e) {
       // Handle authentication exceptions
@@ -16,6 +20,10 @@ class FirebaseAuthServices {
   Future<void> signIn(BuildContext context, String email, String password,
       UserUsecase userUsecase) async {
     try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
       debugPrint("SIGNING IN");
     } catch (e) {
       // Handle authentication exceptions
