@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:debtsimulator/auth/google_auth_page.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -63,50 +61,6 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     _googleSignIn.signInSilently();
-  }
-
-  Future<void> _handleSignIn() async {
-    AuthUseCase authUseCase = Provider.of<AuthUseCase>(context, listen: false);
-    UserUsecase userUsecase = Provider.of<UserUsecase>(context, listen: false);
-    try {
-      authUseCase.changeGoogleBool(true);
-      _googleSignIn.signOut();
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-
-      final GoogleSignInAuthentication? googleAuth =
-          await googleUser?.authentication;
-
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth?.accessToken,
-        idToken: googleAuth?.idToken,
-      );
-
-      userUsecase.setGoogleUser(_currentUser!);
-
-      await FirebaseAuth.instance.signInWithCredential(credential);
-
-      authUseCase.changeGoogleBool(false);
-    } catch (error) {
-      print(error);
-    }
-  }
-
-  Widget signInWithGoogleButton() {
-    return ElevatedButton(
-      onPressed: () async {
-        _handleSignIn();
-      },
-      style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.all(5.0),
-        elevation: 5,
-        shadowColor: Colors.black,
-        backgroundColor: Colors.white,
-      ),
-      child: const Text(
-        "Sign In with Google",
-        style: TextStyle(color: Colors.lightBlue, fontSize: 16),
-      ),
-    );
   }
 
   @override
@@ -255,6 +209,50 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     ));
+  }
+
+  Future<void> _handleSignIn() async {
+    AuthUseCase authUseCase = Provider.of<AuthUseCase>(context, listen: false);
+    UserUsecase userUsecase = Provider.of<UserUsecase>(context, listen: false);
+    try {
+      authUseCase.changeGoogleBool(true);
+      _googleSignIn.signOut();
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+
+      userUsecase.setGoogleUser(_currentUser!);
+
+      await FirebaseAuth.instance.signInWithCredential(credential);
+
+      authUseCase.changeGoogleBool(false);
+    } catch (error) {
+      print(error);
+    }
+  }
+
+  Widget signInWithGoogleButton() {
+    return ElevatedButton(
+      onPressed: () async {
+        _handleSignIn();
+      },
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.all(5.0),
+        elevation: 5,
+        shadowColor: Colors.black,
+        backgroundColor: Colors.white,
+      ),
+      child: const Text(
+        "Sign In with Google",
+        style: TextStyle(color: Colors.lightBlue, fontSize: 16),
+      ),
+    );
   }
 
   String emailVerify(value) {
