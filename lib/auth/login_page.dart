@@ -1,13 +1,10 @@
-import 'dart:async';
 import 'package:email_validator/email_validator.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:debtsimulator/auth/auth_usecase.dart';
 import 'package:debtsimulator/auth/firebase_auth_services.dart';
 import 'package:debtsimulator/useCase/user_usecase.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:neubrutalism_ui/neubrutalism_ui.dart';
 import 'package:provider/provider.dart';
 
 const List<String> scopes = <String>[
@@ -15,11 +12,11 @@ const List<String> scopes = <String>[
   'https://www.googleapis.com/auth/contacts.readonly',
 ];
 
-GoogleSignIn _googleSignIn = GoogleSignIn(
-  // Optional clientId
-  //clientId: '00-xx.apps.googleusercontent.com',
-  scopes: scopes,
-);
+// GoogleSignIn _googleSignIn = GoogleSignIn(
+//   // Optional clientId
+//   //clientId: '00-xx.apps.googleusercontent.com',
+//   scopes: scopes,
+// );
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -31,39 +28,41 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   var inEmailTextController = TextEditingController();
   var inPassTextController = TextEditingController();
+
   var upEmailTextController = TextEditingController();
   var upPassTextController = TextEditingController();
+  var userNameTextController = TextEditingController();
 
-  GoogleSignInAccount? _currentUser;
-  bool _isAuthorized = false; // has granted permissions?
+  // GoogleSignInAccount? _currentUser;
+  // bool _isAuthorized = false; // has granted permissions?
 
   bool _isSignIn = true;
 
-  bool buttonPressed = false;
+  // bool buttonPressed = false;
 
-  @override
-  void initState() {
-    super.initState();
+  // @override
+  // void initState() {
+  //   super.initState();
 
-    _googleSignIn.onCurrentUserChanged
-        .listen((GoogleSignInAccount? account) async {
-      bool isAuthorized = account != null;
-      // However, on web...
-      if (kIsWeb && account != null) {
-        isAuthorized = await _googleSignIn.canAccessScopes(scopes);
-      }
+  //   _googleSignIn.onCurrentUserChanged
+  //       .listen((GoogleSignInAccount? account) async {
+  //     bool isAuthorized = account != null;
+  //     // However, on web...
+  //     if (kIsWeb && account != null) {
+  //       isAuthorized = await _googleSignIn.canAccessScopes(scopes);
+  //     }
 
-      _currentUser = account;
-      _isAuthorized = isAuthorized;
+  //     _currentUser = account;
+  //     _isAuthorized = isAuthorized;
 
-      if (!mounted) return;
-      setState(() {});
+  //     if (!mounted) return;
+  //     setState(() {});
 
-      if (isAuthorized) {}
-    });
+  //     if (isAuthorized) {}
+  //   });
 
-    _googleSignIn.signInSilently();
-  }
+  //   _googleSignIn.signInSilently();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -94,8 +93,8 @@ class _LoginPageState extends State<LoginPage> {
                         const SizedBox(
                           height: 30,
                         ),
-                        signInWithGoogleButton(),
-                        orSignInWithWidget(),
+                        // signInWithGoogleButton(),
+                        // orSignInWithWidget(),
                         inputTextWidget(
                             "email", emailVerify, inEmailTextController),
                         inputTextWidget(
@@ -106,23 +105,11 @@ class _LoginPageState extends State<LoginPage> {
                           children: [
                             Expanded(
                               child: Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(0, 24, 0, 16),
-                                child: Container(
-                                  decoration: BoxDecoration(boxShadow: [
-                                    BoxShadow(
-                                        color: Colors.black,
-                                        blurRadius: 0,
-                                        blurStyle: BlurStyle.solid,
-                                        offset: buttonPressed
-                                            ? const Offset(0, 0)
-                                            : const Offset(-6, 6))
-                                  ]),
-                                  child: ElevatedButton(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 24, 0, 16),
+                                  child: NeuTextButton(
+                                    enableAnimation: true,
                                     onPressed: () async {
-                                      setState(() {
-                                        buttonPressed = true;
-                                      });
                                       authUseCase.changeLoadingBool(true);
                                       await FirebaseAuthServices().signIn(
                                           context,
@@ -131,32 +118,15 @@ class _LoginPageState extends State<LoginPage> {
                                           userUsecase);
 
                                       authUseCase.changeLoadingBool(false);
-                                      if (!mounted) return;
-                                      setState(() {
-                                        buttonPressed = false;
-                                      });
                                     },
-                                    style: ElevatedButton.styleFrom(
-                                      padding: buttonPressed
-                                          ? const EdgeInsets.fromLTRB(
-                                              6, 9, 6, 9)
-                                          : const EdgeInsets.all(8),
-                                      elevation: 5,
-                                      shape: BeveledRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(0)),
-                                      shadowColor: Colors.transparent,
-                                      backgroundColor: const Color.fromARGB(
-                                          255, 219, 254, 1),
-                                    ),
-                                    child: const Text(
+                                    text: const Text(
                                       "SIGN IN",
                                       style: TextStyle(
-                                          color: Colors.black, fontSize: 24),
+                                          color: Colors.black,
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold),
                                     ),
-                                  ),
-                                ),
-                              ),
+                                  )),
                             ),
                           ],
                         ),
@@ -177,68 +147,41 @@ class _LoginPageState extends State<LoginPage> {
                         const SizedBox(
                           height: 30,
                         ),
-                        signInWithGoogleButton(),
-                        orSignInWithWidget(),
+                        // signInWithGoogleButton(),
+                        // orSignInWithWidget(),
                         inputTextWidget(
                             "email", emailVerify, upEmailTextController),
                         inputTextWidget(
                             "password", passwordVerify, upPassTextController),
+                        inputTextWidget("username", passwordVerify, userNameTextController),
                         Row(
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             Expanded(
                               child: Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(0, 24, 0, 16),
-                                child: Container(
-                                  decoration: BoxDecoration(boxShadow: [
-                                    BoxShadow(
-                                        color: Colors.black,
-                                        blurRadius: 0,
-                                        blurStyle: BlurStyle.solid,
-                                        offset: buttonPressed
-                                            ? const Offset(0, 0)
-                                            : const Offset(-6, 6))
-                                  ]),
-                                  child: ElevatedButton(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 24, 0, 16),
+                                  child: NeuTextButton(
+                                    enableAnimation: true,
                                     onPressed: () async {
-                                      setState(() {
-                                        buttonPressed = true;
-                                      });
                                       authUseCase.changeLoadingBool(true);
                                       await FirebaseAuthServices().signUp(
                                           context,
                                           upEmailTextController.text,
                                           upPassTextController.text,
+                                          userNameTextController.text,
                                           userUsecase);
 
                                       authUseCase.changeLoadingBool(false);
-                                      if (!mounted) return;
-                                      setState(() {
-                                        buttonPressed = false;
-                                      });
                                     },
-                                    style: ElevatedButton.styleFrom(
-                                      padding: buttonPressed
-                                          ? const EdgeInsets.fromLTRB(
-                                              6, 9, 6, 9)
-                                          : const EdgeInsets.all(8),
-                                      elevation: 5,
-                                      shape: BeveledRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(0)),
-                                      shadowColor: Colors.transparent,
-                                      backgroundColor: const Color.fromARGB(
-                                          255, 219, 254, 1),
-                                    ),
-                                    child: const Text(
+                                    text: const Text(
                                       "SIGN UP",
                                       style: TextStyle(
-                                          color: Colors.black, fontSize: 24),
+                                          color: Colors.black,
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold),
                                     ),
-                                  ),
-                                ),
-                              ),
+                                  )),
                             ),
                           ],
                         ),
@@ -254,12 +197,14 @@ class _LoginPageState extends State<LoginPage> {
     ));
   }
 
-  Future<void> _handleSignIn() async {
+  /*Future<void> _handleSignIn() async {
     AuthUseCase authUseCase = Provider.of<AuthUseCase>(context, listen: false);
     UserUsecase userUsecase = Provider.of<UserUsecase>(context, listen: false);
     try {
       authUseCase.changeGoogleBool(true);
-      _googleSignIn.signOut();
+      if (_googleSignIn.currentUser != null) {
+        _googleSignIn.signOut();
+      }
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
       final GoogleSignInAuthentication? googleAuth =
@@ -340,7 +285,7 @@ class _LoginPageState extends State<LoginPage> {
         ],
       ),
     );
-  }
+  }*/
 
   String emailVerify(value) {
     return EmailValidator.validate(value ?? "")
@@ -355,32 +300,25 @@ class _LoginPageState extends State<LoginPage> {
   Widget inputTextWidget(
       String hint, Function validator, TextEditingController controller) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-      child: Container(
-        decoration: const BoxDecoration(boxShadow: [
-          BoxShadow(
-              color: Colors.black,
-              blurRadius: 0,
-              blurStyle: BlurStyle.solid,
-              offset: Offset(-6, 6))
-        ]),
-        child: TextFormField(
-          validator: (value) => validator(value),
-          controller: controller,
-          style: const TextStyle(color: Colors.black),
-          decoration: InputDecoration(
+        padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+        child: NeuContainer(
+          child: TextFormField(
+            validator: (value) => validator(value),
+            controller: controller,
+            style: const TextStyle(color: Colors.black),
+            decoration: InputDecoration(
               filled: true,
               fillColor: Colors.white,
+              hintText: hint,
+              hintStyle: const TextStyle(fontSize: 16, color: Colors.black),
               enabledBorder: OutlineInputBorder(
                 borderSide: const BorderSide(color: Colors.black),
                 borderRadius: BorderRadius.circular(0),
               ),
               focusColor: Colors.blue,
-              hintText: hint,
-              hintStyle: const TextStyle(color: Colors.black)),
-        ),
-      ),
-    );
+            ),
+          ),
+        ));
   }
 
   Widget forgotPassword() {

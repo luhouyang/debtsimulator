@@ -9,8 +9,8 @@ class AuthUseCase extends ChangeNotifier {
     notifyListeners();
   }
 
-  void changeGoogleBool(bool boolean) {
+  /*void changeGoogleBool(bool boolean) {
     isGoogleOAuthLoading = boolean;
     notifyListeners();
-  }
+  }*/
 }
