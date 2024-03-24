@@ -30,6 +30,9 @@ class _GamePageState extends State<GamePage> {
             padding: const EdgeInsets.all(12),
             child: Column(
               children: [
+                const SizedBox(
+                  height: 25,
+                ),
                 Column(
                   children: [
                     NeuContainer(
