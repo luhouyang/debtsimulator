@@ -4,12 +4,14 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 class UserUsecase extends ChangeNotifier {
   UserEntity userEntity = UserEntity(
-      name: "name",
-      favouriteFood: "favourite food",
-      funFact: "fun fact",
-      interval: 60.0,
-      water: 0.0,
-      profilePic: "");
+    username: "[]",
+      profileIndex: 0,
+      achievements: []);
+
+  Future<void> setUser(UserEntity newUserEntity) async {
+    userEntity = newUserEntity;
+    notifyListeners();
+  }
 
   GoogleSignInAccount? user;
 

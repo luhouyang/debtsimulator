@@ -1,5 +1,4 @@
 import 'package:debtsimulator/pages/game_page.dart';
-import 'package:debtsimulator/pages/main_page_withAuth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -24,7 +23,7 @@ class AuthStream extends StatelessWidget {
                       color: Colors.blue, size: 40.0),
                 ),
               );
-            } else if (snapshot.hasData && !value.isGoogleOAuthLoading) {
+            } else if (snapshot.hasData /* && !value.isGoogleOAuthLoading*/) {
               return const GamePage();
             } else if (value.isLoading) {
               return Scaffold(
