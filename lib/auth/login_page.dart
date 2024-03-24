@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:debtsimulator/auth/auth_usecase.dart';
 import 'package:debtsimulator/auth/firebase_auth_services.dart';
 import 'package:debtsimulator/useCase/user_usecase.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:neubrutalism_ui/neubrutalism_ui.dart';
 import 'package:provider/provider.dart';
 
@@ -13,11 +12,11 @@ const List<String> scopes = <String>[
   'https://www.googleapis.com/auth/contacts.readonly',
 ];
 
-GoogleSignIn _googleSignIn = GoogleSignIn(
-  // Optional clientId
-  //clientId: '00-xx.apps.googleusercontent.com',
-  scopes: scopes,
-);
+// GoogleSignIn _googleSignIn = GoogleSignIn(
+//   // Optional clientId
+//   //clientId: '00-xx.apps.googleusercontent.com',
+//   scopes: scopes,
+// );
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

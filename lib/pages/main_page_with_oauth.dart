@@ -73,14 +73,14 @@ class _MainPageWithAuthState extends State<MainPageWithAuth> {
         ? () {
             return Column(
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 100,
                 ),
                 ElevatedButton(
                   onPressed: _handleSignOut,
                   child: const Text('SIGN OUT'),
                 ),
-                Text("NO USER DATA YET"),
+                const Text("NO USER DATA YET"),
               ],
             );
           }()
