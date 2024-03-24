@@ -7,9 +7,9 @@ class UserEntity {
 
   factory UserEntity.fromMap(Map<String, dynamic> map) {
     return UserEntity(
-      username: map['username'],
-      profileIndex: map['profileIndex'],
-      achievements: map['achievements'],
+      username: map['username'] as String,
+      profileIndex: map['profileIndex'] as int,
+      achievements: map['achievements'] as List<int>,
     );
   }
 
