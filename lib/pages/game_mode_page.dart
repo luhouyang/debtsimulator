@@ -1,4 +1,5 @@
-import 'package:flutter/foundation.dart';
+import 'package:debtsimulator/pages/game_page.dart';
+import 'package:debtsimulator/pages/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:neubrutalism_ui/neubrutalism_ui.dart';
 
@@ -74,12 +75,14 @@ class _GAMEMODEState extends State<GAMEMODE> {
                       const SizedBox(
                         height: 20,
                       ),
-                      NeuContainer(
-                          color: Colors.white,
-                          width: 300,
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8),
-                            child: Text(
+                      NeuTextButton(
+                        buttonWidth: 300,
+                        enableAnimation: true,
+                        buttonColor: Colors.white,
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const GamePage()));
+                        },
+                        text: const Text(
                               "Solo Mode",
                               style: TextStyle(
                                   color: Colors.black,
@@ -87,7 +90,21 @@ class _GAMEMODEState extends State<GAMEMODE> {
                                   fontSize: 28),
                               textAlign: TextAlign.center,
                             ),
-                          )),
+                      ),
+                      // NeuContainer(
+                      //     color: Colors.white,
+                      //     width: 300,
+                      //     child: const Padding(
+                      //       padding: EdgeInsets.symmetric(vertical: 8),
+                      //       child: Text(
+                      //         "Solo Mode",
+                      //         style: TextStyle(
+                      //             color: Colors.black,
+                      //             fontWeight: FontWeight.bold,
+                      //             fontSize: 28),
+                      //         textAlign: TextAlign.center,
+                      //       ),
+                      //     )),
                       const SizedBox(
                         height: 20,
                       ),
@@ -106,20 +123,36 @@ class _GAMEMODEState extends State<GAMEMODE> {
                             ),
                           )),
                       const SizedBox(height: 20),
-                      NeuContainer(
-                          color: const Color.fromARGB(255, 190, 243, 65),
-                          width: 300,
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8),
-                            child: Text(
-                              "Badges",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 28),
-                              textAlign: TextAlign.center,
-                            ),
-                          )),
+                      NeuTextButton(
+                        buttonWidth: 300,
+                        enableAnimation: true,
+                        buttonColor: const Color.fromARGB(255, 190, 243, 65),
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfilePage()));
+                        },
+                        text: const Text(
+                          "Badges",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 28),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      // NeuContainer(
+                      //     color: const Color.fromARGB(255, 190, 243, 65),
+                      //     width: 300,
+                      //     child: const Padding(
+                      //       padding: EdgeInsets.symmetric(vertical: 8),
+                      //       child: Text(
+                      //         "Badges",
+                      //         style: TextStyle(
+                      //             color: Colors.black,
+                      //             fontWeight: FontWeight.bold,
+                      //             fontSize: 28),
+                      //         textAlign: TextAlign.center,
+                      //       ),
+                      //     ),),
                     ],
                   ),
                 ))));

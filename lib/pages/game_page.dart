@@ -13,13 +13,6 @@ class GamePage extends StatefulWidget {
 }
 
 class _GamePageState extends State<GamePage> {
-  // @override
-  // void initState() {
-  //   FirebaseAuthServices().logout();
-  //   // TODO: implement initState
-  //   super.initState();
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Consumer<GameTileUseCase>(

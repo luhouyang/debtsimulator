@@ -4,7 +4,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 class UserUsecase extends ChangeNotifier {
   UserEntity userEntity = UserEntity(
-    username: "[]",
+    username: "",
       profileIndex: 0,
       achievements: []);
 

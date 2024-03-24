@@ -85,14 +85,14 @@ class _LoginPageState extends State<LoginPage> {
               _isSignIn
                   ? Column(
                       children: [
-                        ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => GAMEMODE()));
-                            },
-                            child: Icon(Icons.abc)),
+                        // ElevatedButton(
+                        //     onPressed: () {
+                        //       Navigator.push(
+                        //           context,
+                        //           MaterialPageRoute(
+                        //               builder: (_) => GAMEMODE()));
+                        //     },
+                        //     child: Icon(Icons.abc)),
                         const Text(
                           "SIGN IN",
                           style: TextStyle(
