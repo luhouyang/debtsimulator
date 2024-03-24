@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:debtsimulator/pages/game_mode_page.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -83,6 +85,14 @@ class _LoginPageState extends State<LoginPage> {
               _isSignIn
                   ? Column(
                       children: [
+                        ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => GAMEMODE()));
+                            },
+                            child: Icon(Icons.abc)),
                         const Text(
                           "SIGN IN",
                           style: TextStyle(
@@ -153,7 +163,8 @@ class _LoginPageState extends State<LoginPage> {
                             "email", emailVerify, upEmailTextController),
                         inputTextWidget(
                             "password", passwordVerify, upPassTextController),
-                        inputTextWidget("username", passwordVerify, userNameTextController),
+                        inputTextWidget(
+                            "username", passwordVerify, userNameTextController),
                         Row(
                           mainAxisSize: MainAxisSize.max,
                           children: [
