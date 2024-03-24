@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:debtsimulator/pages/game_page.dart';
 import 'package:flutter/material.dart';
 import 'package:neubrutalism_ui/neubrutalism_ui.dart';
 
@@ -91,20 +91,32 @@ class _GAMEMODEState extends State<GAMEMODE> {
                       const SizedBox(
                         height: 20,
                       ),
-                      NeuContainer(
-                          color: const Color.fromARGB(255, 243, 187, 65),
-                          width: 300,
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8),
-                            child: Text(
-                              "Multiplayer Mode",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 28),
-                              textAlign: TextAlign.center,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return GamePage();
+                              },
                             ),
-                          )),
+                          );
+                        },
+                        child: NeuContainer(
+                            color: const Color.fromARGB(255, 243, 187, 65),
+                            width: 300,
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 8),
+                              child: Text(
+                                "Multiplayer Mode",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 28),
+                                textAlign: TextAlign.center,
+                              ),
+                            )),
+                      ),
                       const SizedBox(height: 20),
                       NeuContainer(
                           color: const Color.fromARGB(255, 190, 243, 65),
