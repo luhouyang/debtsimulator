@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:debtsimulator/pages/game_mode_page.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -84,6 +85,14 @@ class _LoginPageState extends State<LoginPage> {
               _isSignIn
                   ? Column(
                       children: [
+                        ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => GAMEMODE()));
+                            },
+                            child: Icon(Icons.abc)),
                         const Text(
                           "SIGN IN",
                           style: TextStyle(
