@@ -1,43 +1,23 @@
-import 'dart:typed_data';
-
 class UserEntity {
-  final String name;
-  final String favouriteFood;
-  final String funFact;
-  final double interval;
-  String profilePic;
-  double water;
-  Uint8List? profileImage;
+  String username;
+  int profileIndex;
+  List<int> achievements;
 
-  UserEntity(
-      {required this.name,
-      required this.favouriteFood,
-      required this.funFact,
-      required this.interval,
-      required this.water,
-      required this.profilePic,
-      this.profileImage});
+  UserEntity({required this.username, required this.profileIndex, required this.achievements});
 
   factory UserEntity.fromMap(Map<String, dynamic> map) {
     return UserEntity(
-      name: map['name'],
-      favouriteFood: map['favouriteFood'],
-      funFact: map['funFact'],
-      interval: double.tryParse(map['interval'].toString())!,
-      water: double.tryParse(map['water'].toString())!,
-      profilePic: map['profilePic'],
-      profileImage: null,
+      username: map['username'],
+      profileIndex: map['profileIndex'],
+      achievements: map['achievements'],
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'name': name,
-      'favouriteFood': favouriteFood,
-      'funFact': funFact,
-      'interval': interval,
-      'water': water,
-      'profilePic': profilePic,
+      'username': username,
+      'profileIndex': profileIndex,
+      'achievements': achievements,
     };
   }
 }

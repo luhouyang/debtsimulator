@@ -28,8 +28,10 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   var inEmailTextController = TextEditingController();
   var inPassTextController = TextEditingController();
+
   var upEmailTextController = TextEditingController();
   var upPassTextController = TextEditingController();
+  var userNameTextController = TextEditingController();
 
   // GoogleSignInAccount? _currentUser;
   // bool _isAuthorized = false; // has granted permissions?
@@ -151,6 +153,7 @@ class _LoginPageState extends State<LoginPage> {
                             "email", emailVerify, upEmailTextController),
                         inputTextWidget(
                             "password", passwordVerify, upPassTextController),
+                        inputTextWidget("username", passwordVerify, userNameTextController),
                         Row(
                           mainAxisSize: MainAxisSize.max,
                           children: [
@@ -166,6 +169,7 @@ class _LoginPageState extends State<LoginPage> {
                                           context,
                                           upEmailTextController.text,
                                           upPassTextController.text,
+                                          userNameTextController.text,
                                           userUsecase);
 
                                       authUseCase.changeLoadingBool(false);

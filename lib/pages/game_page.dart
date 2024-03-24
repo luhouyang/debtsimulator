@@ -1,3 +1,4 @@
+import 'package:debtsimulator/auth/firebase_auth_services.dart';
 import 'package:flutter/material.dart';
 import 'package:neubrutalism_ui/neubrutalism_ui.dart';
 
@@ -9,6 +10,13 @@ class GamePage extends StatefulWidget {
 }
 
 class _GamePageState extends State<GamePage> {
+  // @override
+  // void initState() {
+  //   FirebaseAuthServices().logout();
+  //   // TODO: implement initState
+  //   super.initState();
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
