@@ -22,7 +22,16 @@ class _GamePageState extends State<GamePage> {
           body: Padding(
             padding: const EdgeInsets.all(12),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  child: IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: const Icon(Icons.arrow_back_ios_new_rounded)),
+                ),
                 Column(
                   children: [
                     NeuContainer(
@@ -106,7 +115,7 @@ class _GamePageState extends State<GamePage> {
                   ],
                 ),
                 const SizedBox(
-                  height: 30,
+                  height: 20,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
