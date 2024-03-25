@@ -1,7 +1,7 @@
 class UserEntity {
   String username;
   int profileIndex;
-  List<int> achievements;
+  List<dynamic> achievements;
 
   UserEntity(
       {required this.username,
@@ -12,7 +12,7 @@ class UserEntity {
     return UserEntity(
       username: map['username'] as String,
       profileIndex: map['profileIndex'] as int,
-      achievements: map['achievements'] as List<int>,
+      achievements: map['achievements'],
     );
   }
 

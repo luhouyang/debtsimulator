@@ -5,9 +5,9 @@ class GameEntity {
   int maxPlayer = 4;
 
   final String gameId;
-  bool gameStatus;
+  bool gameStatus;  // 0 (not yet), 1 (started)
   int numPlayer;
-  List<PlayerEntity> playerList;
+  List<Map<String, dynamic>> playerList;
 
   GameEntity(
       {required this.gameId,
@@ -15,15 +15,16 @@ class GameEntity {
       required this.numPlayer,
       required this.playerList});
 
-  factory GameEntity.fromMap(Map<String, dynamic> gMap) {
+  factory GameEntity.fromMap(Map<String, dynamic> map) {
     return GameEntity(
-      gameId: gMap['gameId'] as String,
-      gameStatus: gMap['gameStatus'] as bool,
-      numPlayer: gMap['numPlayer'] as int,
-      playerList: List.from(
+      gameId: map['gameId'] as String,
+      gameStatus: map['gameStatus'] as bool,
+      numPlayer: map['numPlayer'] as int,
+      playerList: map['playerList']
+      /*List.from(
           (gMap['playerList'] as List<Map<String, dynamic>>).map((playerData) {
         PlayerEntity.fromMap(playerData);
-      })),
+      })),*/
     );
   }
 

@@ -36,25 +36,33 @@ class _ProfilePageState extends State<ProfilePage> {
                     "assets/profile_placeholder.jpg",
                   ),
                 ),
-                //TODO: make this neubutton
                 Positioned(
-                    right: 10,
-                    bottom: 10,
-                    child: ClipOval(
-                      child: InkWell(
-                        onHover: (value) {},
-                        onTap: () {},
-                        child: Container(
-                          padding: const EdgeInsets.all(8.0),
-                          color: Colors.blue,
-                          child: const Icon(
-                            color: Colors.black,
-                            Icons.camera_enhance,
-                            size: 35,
-                          ),
+                  right: 5,
+                  bottom: 5,
+                  child: Container(
+                    decoration: BoxDecoration(
+                        boxShadow: const [
+                          BoxShadow(color: Colors.black, offset: Offset(0, 5))
+                        ],
+                        border: Border.all(width: 3),
+                        borderRadius: BorderRadius.circular(50)),
+                    margin: const EdgeInsets.all(5),
+                    height: 55,
+                    width: 55,
+                    child: FittedBox(
+                      child: FloatingActionButton(
+                        backgroundColor: Colors.red,
+                        onPressed: () {},
+                        shape: const CircleBorder(),
+                        child: const Icon(
+                          color: Colors.black,
+                          Icons.camera_enhance,
+                          size: 35,
                         ),
                       ),
-                    )),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -70,6 +78,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     onPressed: () async {
                       UserEntity userEntity = UserEntity(
                           username: "", profileIndex: 0, achievements: []);
+
                       await FirebaseAuthServices().logout().then((value) {
                         userUsecase.setUser(userEntity);
                       }).then((value) => Navigator.pop(context));
