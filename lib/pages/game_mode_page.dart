@@ -75,6 +75,7 @@ class _GAMEMODEState extends State<GAMEMODE> {
                       const SizedBox(
                         height: 20,
                       ),
+                      //TODO: add height
                       NeuTextButton(
                         buttonWidth: 300,
                         enableAnimation: true,
@@ -108,6 +109,11 @@ class _GAMEMODEState extends State<GAMEMODE> {
                       const SizedBox(
                         height: 20,
                       ),
+                      //TODO: change to neubutton
+                      //TODO: route to create room/join a room
+                      //TODO: create room -> waiting page (ready/quit) [streambuilder]
+                      //TODO: join room [listview builder] -> waiting page (ready/quit) [streambuilder]
+                      //TODO: when start -> GamePage() [streambuilder]
                       GestureDetector(
                         onTap: () {
                           Navigator.push(

@@ -38,6 +38,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     "assets/profile_placeholder.jpg",
                   ),
                 ),
+                //TODO: make this neubutton
                 Positioned(
                     right: 10,
                     bottom: 10,
@@ -84,6 +85,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ]),
             ]),
           ),
+          //TODO: add badges, grid view builder
         ]),
       );
     }
