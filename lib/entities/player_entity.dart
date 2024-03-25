@@ -1,18 +1,48 @@
 //TODO: complete this
 class PlayerEntity {
   final String username;
+  double money;
+  double debt;
+  bool ready; // 0 (not ready), 1 (ready)
+  int state; // -1 (lost), 0 (not turn), 1 (your turn)
+  int boardIndex;
+  List<String> assets;
+  List<int> moveHistory;
 
-  PlayerEntity({required this.username});
+  PlayerEntity({
+    required this.username,
+    required this.money,
+    required this.debt,
+    required this.ready,
+    required this.state,
+    required this.boardIndex,
+    required this.assets,
+    required this.moveHistory,
+    });
 
   factory PlayerEntity.fromMap(Map<String, dynamic> map) {
     return PlayerEntity(
-      username: map['username'],
+      username: map['username'] as String,
+      money: map['money'] as double,
+      debt: map['debt'] as double,
+      ready: map['ready'] as bool,
+      state: map['state'] as int,
+      boardIndex: map['boardIndex'] as int,
+      assets: map['assets'] as List<String>,
+      moveHistory: map['moveHistory'] as List<int>,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'username': username,
+      'money': money,
+      'debt': debt,
+      'ready': ready,
+      'state': state,
+      'boardIndex': boardIndex,
+      'assets': assets,
+      'moveHistory': moveHistory,
     };
   }
 }

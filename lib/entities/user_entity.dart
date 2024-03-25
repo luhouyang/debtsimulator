@@ -3,7 +3,10 @@ class UserEntity {
   int profileIndex;
   List<int> achievements;
 
-  UserEntity({required this.username, required this.profileIndex, required this.achievements});
+  UserEntity(
+      {required this.username,
+      required this.profileIndex,
+      required this.achievements});
 
   factory UserEntity.fromMap(Map<String, dynamic> map) {
     return UserEntity(
