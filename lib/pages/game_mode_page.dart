@@ -114,7 +114,7 @@ class _GAMEMODEState extends State<GAMEMODE> {
                             context,
                             MaterialPageRoute(
                               builder: (context) {
-                                return GamePage();
+                                return const GamePage();
                               },
                             ),
                           );

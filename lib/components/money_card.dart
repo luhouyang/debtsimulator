@@ -29,14 +29,14 @@ class MoneyCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(30),
               child: Text(
                 text,
-                style: TextStyle(
+                style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: Colors.white),
                 textAlign: TextAlign.center,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               width: 10,
             ),
             Padding(

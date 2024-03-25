@@ -24,7 +24,7 @@ class _GamePageState extends State<GamePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 SizedBox(
@@ -48,7 +48,7 @@ class _GamePageState extends State<GamePage> {
                       width: double.infinity,
                       color: Colors.white,
                       child: Text(
-                        style: TextStyle(fontSize: 18),
+                        style: const TextStyle(fontSize: 18),
                         value.gameTileMap[value.getTileIndex()]!.description,
                         textAlign: TextAlign.center,
                       ),
