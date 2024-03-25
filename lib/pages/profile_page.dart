@@ -13,8 +13,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  bool _isEditing = false;
-
   @override
   Widget build(BuildContext context) {
     UserUsecase userUsecase = Provider.of<UserUsecase>(context, listen: false);
