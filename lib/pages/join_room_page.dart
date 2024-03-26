@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:debtsimulator/entities/game_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:neubrutalism_ui/neubrutalism_ui.dart';
@@ -42,16 +43,16 @@ class _JoinRoomPageState extends State<JoinRoomPage> {
 
     return Scaffold(
       body: StreamBuilder(
-          stream: _controller.stream,
+          stream: query.snapshots(), //_controller.stream,
           builder: (context, snapshot) {
             // check the snapshot (hasError, hasData, etc.)
             if (snapshot.hasError) {
-              return const Text("Error");
+              return Center(child: Text("Error: ${snapshot.error}"));
             } else if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
-                  child: LoadingAnimationWidget.discreteCircle(
-                      color: Colors.blue, size: 40.0),
-                );
+                child: LoadingAnimationWidget.discreteCircle(
+                    color: Colors.blue, size: 40.0),
+              );
             }
             return Padding(
               padding: const EdgeInsets.fromLTRB(16, 40, 16, 0),
@@ -67,26 +68,77 @@ class _JoinRoomPageState extends State<JoinRoomPage> {
                           fontSize: 28),
                       textAlign: TextAlign.center,
                     ),
-                    ListView.builder(
-                      padding: EdgeInsets.zero,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: intList.length,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 8, bottom: 8),
-                          child: InkWell(
-                            onTap: () {},
-                            onHover: (bol) {},
-                            child: NeuContainer(
-                              height: 100,
-                              width: 300,
-                              child: Text(intList[index].toString()),
+                    if (!snapshot.hasData)
+                      const Center(child: Text("No Games")),
+                    if (snapshot.hasData)
+                      ListView.builder(
+                        padding: EdgeInsets.zero,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: snapshot.data!.docs.length,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          GameEntity gameEntity = GameEntity.fromMap(
+                              snapshot.data!.docs.first.data()
+                                  as Map<String, dynamic>);
+
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 8, bottom: 8),
+                            child: InkWell(
+                              onTap: () {},
+                              onHover: (bol) {},
+                              child: NeuContainer(
+                                width: 300,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      gameEntity.roomName,
+                                      style: const TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 28),
+                                    ),
+                                    Text(
+                                      gameEntity.gameId,
+                                      style: const TextStyle(
+                                          color: Colors.black, fontSize: 12),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Column(
+                                          children: [
+                                            const Text(
+                                              "Players:",
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 16),
+                                            ),
+                                            Text(
+                                              "${gameEntity.numPlayer}",
+                                              style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 28),
+                                            ),
+                                          ],
+                                        ),
+                                        Text(
+                                          gameEntity.gameStatus
+                                              .toString(),
+                                          style: const TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 10),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                    )
+                          );
+                        },
+                      )
                   ],
                 ),
               ),

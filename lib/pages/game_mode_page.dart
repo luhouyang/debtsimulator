@@ -1,11 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:debtsimulator/entities/game_entity.dart';
-import 'package:debtsimulator/entities/player_entity.dart';
 import 'package:debtsimulator/entities/user_entity.dart';
+import 'package:debtsimulator/pages/create_new_game_page.dart';
 import 'package:debtsimulator/pages/game_page.dart';
 import 'package:debtsimulator/pages/join_room_page.dart';
 import 'package:debtsimulator/pages/profile_page.dart';
-import 'package:debtsimulator/pages/waiting_room_page.dart';
 import 'package:debtsimulator/useCase/user_usecase.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -39,8 +37,6 @@ class _GAMEMODEState extends State<GAMEMODE> {
 
   @override
   Widget build(BuildContext context) {
-    UserUsecase userUsecase = Provider.of<UserUsecase>(context, listen: false);
-
     return SafeArea(
         child: Scaffold(
             backgroundColor: const Color.fromARGB(255, 229, 229, 229),
@@ -140,8 +136,6 @@ class _GAMEMODEState extends State<GAMEMODE> {
                       const SizedBox(
                         height: 20,
                       ),
-                      //TODO: change to neubutton
-                      //TODO: route to create room/join a room
                       //TODO: create room -> waiting page (ready/quit) [streambuilder]
                       //TODO: join room [listview builder] -> waiting page (ready/quit) [streambuilder]
                       //TODO: when start -> GamePage() [streambuilder]
@@ -154,7 +148,7 @@ class _GAMEMODEState extends State<GAMEMODE> {
                           showDialog(
                             context: context,
                             builder: (context) {
-                              return multiplayerDialog(userUsecase);
+                              return multiplayerDialog();
                             },
                           );
                         },
@@ -233,7 +227,7 @@ class _GAMEMODEState extends State<GAMEMODE> {
                 ))));
   }
 
-  Dialog multiplayerDialog(UserUsecase userUsecase) {
+  Dialog multiplayerDialog() {
     return Dialog(
       backgroundColor: Colors.transparent,
       shadowColor: Colors.transparent,
@@ -272,40 +266,12 @@ class _GAMEMODEState extends State<GAMEMODE> {
               buttonWidth: MediaQuery.of(context).size.width * 0.7,
               enableAnimation: true,
               buttonColor: Colors.red,
-              onPressed: () async {
-                //TODO: add new game first
-                FirebaseFirestore firebaseFirestore =
-                    FirebaseFirestore.instance;
-
-                String newId = firebaseFirestore.collection("games").doc().id;
-
-                PlayerEntity playerEntity = PlayerEntity(
-                    username: userUsecase.userEntity.username,
-                    money: 0,
-                    debt: 0,
-                    ready: true,
-                    state: 1,
-                    boardIndex: 0,
-                    assets: [],
-                    moveHistory: []);
-                List<Map<String, dynamic>> playerList = [playerEntity.toMap()];
-                debugPrint(playerList.toString());
-
-                await firebaseFirestore
-                    .collection("games")
-                    .add(GameEntity(
-                            gameId: newId,
-                            gameStatus: false,
-                            numPlayer: 1,
-                            playerList: playerList)
-                        .toMap())
-                    .then((value) {
-                  Navigator.pop(context);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const WaitingRoomPage()));
-                });
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const CreateNewGamePage()));
               },
               text: const Text(
                 "New Game",

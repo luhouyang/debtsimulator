@@ -154,7 +154,7 @@ class _LoginPageState extends State<LoginPage> {
                         inputTextWidget(
                             "password", passwordVerify, upPassTextController),
                         inputTextWidget(
-                            "username", passwordVerify, userNameTextController),
+                            "username", usernameVerify, userNameTextController),
                         Row(
                           mainAxisSize: MainAxisSize.max,
                           children: [
@@ -296,6 +296,10 @@ class _LoginPageState extends State<LoginPage> {
 
   String passwordVerify(value) {
     return value != null ? "" : "Please enter a valid password";
+  }
+
+  String usernameVerify(value) {
+    return value != null ? "" : "Please enter a valid username";
   }
 
   Widget inputTextWidget(
