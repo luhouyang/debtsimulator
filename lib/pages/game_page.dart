@@ -191,7 +191,7 @@ class _GamePageState extends State<GamePage> {
                 backgroundColor: Colors.red,
                 onPressed: () {
                   value.moveToNext();
-                  debugPrint("Changed to" + value.currentIndex.toString());
+                  debugPrint("Changed to${value.currentIndex}");
                 },
                 shape: const CircleBorder(),
                 child: const Text(

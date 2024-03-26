@@ -1,6 +1,4 @@
 //TODO: complete this
-import 'package:debtsimulator/entities/player_entity.dart';
-
 class GameEntity {
   int maxPlayer = 4;
 
