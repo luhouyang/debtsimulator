@@ -36,7 +36,6 @@ class _CreateNewGamePageState extends State<CreateNewGamePage> {
               enableAnimation: true,
               buttonColor: Colors.red,
               onPressed: () async {
-                //TODO: add new game first
                 FirebaseFirestore firebaseFirestore =
                     FirebaseFirestore.instance;
 

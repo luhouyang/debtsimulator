@@ -1,7 +1,7 @@
 class UserEntity {
   String username;
   int profileIndex;
-  List<dynamic> achievements;
+  List<dynamic> achievements; // int
 
   UserEntity(
       {required this.username,

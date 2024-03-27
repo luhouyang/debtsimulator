@@ -1,7 +1,9 @@
-import 'dart:async';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:debtsimulator/entities/game_entity.dart';
+import 'package:debtsimulator/entities/player_entity.dart';
+import 'package:debtsimulator/pages/waiting_room_page.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:neubrutalism_ui/neubrutalism_ui.dart';
@@ -14,27 +16,6 @@ class JoinRoomPage extends StatefulWidget {
 }
 
 class _JoinRoomPageState extends State<JoinRoomPage> {
-  // instance of StreamController to put data to the stream
-  final StreamController _controller = StreamController();
-  List<int> intList = [0];
-
-  // simulate a data source
-  addStreamData() async {
-    for (var i = 0; i < 100; i++) {
-      await Future.delayed(const Duration(seconds: 2));
-      // add data to the stram
-      intList.add(i);
-      _controller.sink.add(intList);
-    }
-  }
-
-  @override
-  void initState() {
-    // run the stream
-    addStreamData();
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     Query query = FirebaseFirestore.instance
@@ -69,7 +50,15 @@ class _JoinRoomPageState extends State<JoinRoomPage> {
                       textAlign: TextAlign.center,
                     ),
                     if (!snapshot.hasData)
-                      const Center(child: Text("No Games")),
+                      const Center(
+                        child: Text(
+                          "No Games",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 28),
+                        ),
+                      ),
                     if (snapshot.hasData)
                       ListView.builder(
                         padding: EdgeInsets.zero,
@@ -81,58 +70,177 @@ class _JoinRoomPageState extends State<JoinRoomPage> {
                               snapshot.data!.docs.first.data()
                                   as Map<String, dynamic>);
 
+                          Color color = Color.fromARGB(
+                              255,
+                              Random().nextInt(105) + 150,
+                              Random().nextInt(105) + 150,
+                              Random().nextInt(105) + 150);
+
                           return Padding(
                             padding: const EdgeInsets.only(top: 8, bottom: 8),
                             child: InkWell(
                               onTap: () {},
                               onHover: (bol) {},
                               child: NeuContainer(
+                                color: color.withOpacity(0.75),
                                 width: 300,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      gameEntity.roomName,
-                                      style: const TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 28),
-                                    ),
-                                    Text(
-                                      gameEntity.gameId,
-                                      style: const TextStyle(
-                                          color: Colors.black, fontSize: 12),
-                                    ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        Column(
-                                          children: [
-                                            const Text(
-                                              "Players:",
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 16),
-                                            ),
-                                            Text(
-                                              "${gameEntity.numPlayer}",
-                                              style: const TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 28),
-                                            ),
-                                          ],
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      NeuContainer(
+                                        color: color,
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              8, 0, 0, 8),
+                                          child: Row(
+                                            children: [
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    gameEntity.roomName,
+                                                    style: const TextStyle(
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 28),
+                                                  ),
+                                                  Text(
+                                                    gameEntity.gameId,
+                                                    style: const TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 12),
+                                                  ),
+                                                ],
+                                              ),
+                                              const Expanded(child: SizedBox()),
+                                            ],
+                                          ),
                                         ),
-                                        Text(
-                                          gameEntity.gameStatus
-                                              .toString(),
-                                          style: const TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 10),
-                                        ),
-                                      ],
-                                    )
-                                  ],
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Row(
+                                        children: [
+                                          NeuContainer(
+                                            color: color,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.2,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      8, 4, 8, 4),
+                                              child: Column(
+                                                children: [
+                                                  const Text(
+                                                    "Players:",
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 16),
+                                                  ),
+                                                  Text(
+                                                    "${gameEntity.numPlayer}",
+                                                    style: const TextStyle(
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 28),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.02,
+                                          ),
+                                          Expanded(
+                                            child: NeuContainer(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.2,
+                                              color: color,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        6, 2, 6, 2),
+                                                child: ListView.builder(
+                                                  itemCount: gameEntity
+                                                      .playerList.length,
+                                                  padding: EdgeInsets.zero,
+                                                  physics:
+                                                      const NeverScrollableScrollPhysics(),
+                                                  shrinkWrap: true,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    PlayerEntity playerEntity =
+                                                        PlayerEntity.fromMap(
+                                                            gameEntity
+                                                                    .playerList[
+                                                                index]);
+
+                                                    return Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              2.0),
+                                                      child: Text(
+                                                        "${index + 1}. ${playerEntity.username}",
+                                                        style: const TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 16),
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.02,
+                                          ),
+                                          Expanded(
+                                            child: NeuTextButton(
+                                              buttonHeight:
+                                                  MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.2,
+                                              enableAnimation: true,
+                                              buttonColor: color,
+                                              onPressed: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            const WaitingRoomPage()));
+                                              },
+                                              text: const Text(
+                                                "JOIN",
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 28),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),

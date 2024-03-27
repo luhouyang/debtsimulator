@@ -6,8 +6,8 @@ class PlayerEntity {
   int state; // -1 (lost), 0 (not turn), 1 (your turn)
   int afkCounter; // if (afkCounter == 3) state = -1
   int boardIndex;
-  List<String> assets;
-  List<int> moveHistory;
+  List<dynamic> assets; // String
+  List<dynamic> moveHistory;  // int
 
   PlayerEntity({
     required this.username,
@@ -30,8 +30,8 @@ class PlayerEntity {
       state: map['state'] as int,
       afkCounter: map['afkCounter'] as int,
       boardIndex: map['boardIndex'] as int,
-      assets: map['assets'] as List<String>,
-      moveHistory: map['moveHistory'] as List<int>,
+      assets: map['assets'],
+      moveHistory: map['moveHistory'],
     );
   }
 
