@@ -199,8 +199,8 @@ class _JoinRoomPageState extends State<JoinRoomPage> {
                                                               2.0),
                                                       child: Text(
                                                         maxLines: 1,
-                                                        overflow:
-                                                            TextOverflow.fade,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
                                                         "${index + 1}. ${playerEntity.username}",
                                                         style: const TextStyle(
                                                             color: Colors.black,
@@ -271,6 +271,7 @@ class _JoinRoomPageState extends State<JoinRoomPage> {
 
                                                   gameEntity.playerList.add(
                                                       playerEntity.toMap());
+                                                  gameEntity.numPlayer++;
 
                                                   await firebaseFirestore
                                                       .collection("games")

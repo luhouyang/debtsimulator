@@ -239,37 +239,37 @@ class _WaitingRoomPageState extends State<WaitingRoomPage> {
                             FirebaseFirestore.instance;
 
                         gameEntity.playerList.removeAt(playerIndex);
+                        gameEntity.numPlayer--;
 
                         if (gameEntity.playerList.isEmpty) {
                           await firebaseFirestore
-                            .collection("games")
-                            .doc(widget.gameId)
-                            .delete()
-                            .then((value) {
-                          userUsecase.userEntity.ongoingGame = "";
-                          firebaseFirestore
-                              .collection("users")
-                              .doc(userUsecase.userEntity.userId)
-                              .set(userUsecase.userEntity.toMap());
+                              .collection("games")
+                              .doc(widget.gameId)
+                              .delete()
+                              .then((value) {
+                            userUsecase.userEntity.ongoingGame = "";
+                            firebaseFirestore
+                                .collection("users")
+                                .doc(userUsecase.userEntity.userId)
+                                .set(userUsecase.userEntity.toMap());
 
-                          Navigator.pop(context);
-                        });
+                            Navigator.pop(context);
+                          });
                         } else {
                           await firebaseFirestore
-                            .collection("games")
-                            .doc(widget.gameId)
-                            .set(gameEntity.toMap())
-                            .then((value) {
-                          userUsecase.userEntity.ongoingGame = "";
-                          firebaseFirestore
-                              .collection("users")
-                              .doc(userUsecase.userEntity.userId)
-                              .set(userUsecase.userEntity.toMap());
+                              .collection("games")
+                              .doc(widget.gameId)
+                              .set(gameEntity.toMap())
+                              .then((value) {
+                            userUsecase.userEntity.ongoingGame = "";
+                            firebaseFirestore
+                                .collection("users")
+                                .doc(userUsecase.userEntity.userId)
+                                .set(userUsecase.userEntity.toMap());
 
-                          Navigator.pop(context);
-                        });
+                            Navigator.pop(context);
+                          });
                         }
-                        
                       },
                       text: const Text(
                         "QUIT",
