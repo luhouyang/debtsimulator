@@ -65,14 +65,22 @@ class _WaitingRoomPageState extends State<WaitingRoomPage> {
 
             if (readyCounter == gameEntity.numPlayer) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                Navigator.pop(context);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => GamePage(
-                        gameId: widget.gameId,
-                      ),
-                    ));
+                gameEntity.gameStatus = true;
+
+                FirebaseFirestore.instance
+                    .collection("games")
+                    .doc(widget.gameId)
+                    .set(gameEntity.toMap())
+                    .then((value) {
+                  Navigator.pop(context);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => GamePage(
+                          gameId: widget.gameId,
+                        ),
+                      ));
+                });
               });
             }
           }
