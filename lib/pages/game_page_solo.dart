@@ -283,7 +283,7 @@ class _GamePageSoloState extends State<GamePageSolo> {
                 ),
               ),
             ),
-            Column(
+            const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
@@ -370,7 +370,7 @@ class _GamePageSoloState extends State<GamePageSolo> {
                         child: NeuContainer(
                           color: Colors.lightBlue,
                           width: MediaQuery.of(context).size.width * 0.4,
-                          child: Text(
+                          child: const Text(
                               "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"),
                         ),
                       ),
@@ -382,7 +382,7 @@ class _GamePageSoloState extends State<GamePageSolo> {
                         child: NeuContainer(
                           color: Colors.lightBlue,
                           width: MediaQuery.of(context).size.width * 0.4,
-                          child: Text(
+                          child: const Text(
                               "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"),
                         ),
                       ),
@@ -394,7 +394,7 @@ class _GamePageSoloState extends State<GamePageSolo> {
                         child: NeuContainer(
                           color: Colors.amber,
                           width: MediaQuery.of(context).size.width * 0.4,
-                          child: Text(
+                          child: const Text(
                               "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"),
                         ),
                       ),
