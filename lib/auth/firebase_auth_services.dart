@@ -17,7 +17,12 @@ class FirebaseAuthServices {
         await FirebaseFirestore.instance
             .collection("users")
             .doc(userCredential.user!.uid)
-            .set(UserEntity(username: username, profileIndex: 0, achievements: []).toMap());
+            .set(UserEntity(
+                userId: userCredential.user!.uid,
+                username: username,
+                ongoingGame: "",
+                profileIndex: 0,
+                achievements: []).toMap());
       });
 
       debugPrint("SIGNING UP");

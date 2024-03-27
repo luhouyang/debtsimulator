@@ -77,7 +77,11 @@ class _ProfilePageState extends State<ProfilePage> {
                     enableAnimation: true,
                     onPressed: () async {
                       UserEntity userEntity = UserEntity(
-                          username: "", profileIndex: 0, achievements: []);
+                          userId: "",
+                          username: "",
+                          ongoingGame: "",
+                          profileIndex: 0,
+                          achievements: []);
 
                       await FirebaseAuthServices().logout().then((value) {
                         userUsecase.setUser(userEntity);

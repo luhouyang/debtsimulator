@@ -4,9 +4,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:debtsimulator/entities/game_entity.dart';
 import 'package:debtsimulator/entities/player_entity.dart';
 import 'package:debtsimulator/pages/waiting_room_page.dart';
+import 'package:debtsimulator/useCase/user_usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:neubrutalism_ui/neubrutalism_ui.dart';
+import 'package:provider/provider.dart';
 
 class JoinRoomPage extends StatefulWidget {
   const JoinRoomPage({super.key});
@@ -18,13 +20,15 @@ class JoinRoomPage extends StatefulWidget {
 class _JoinRoomPageState extends State<JoinRoomPage> {
   @override
   Widget build(BuildContext context) {
+    UserUsecase userUsecase = Provider.of<UserUsecase>(context, listen: false);
+
     Query query = FirebaseFirestore.instance
         .collection("games")
         .where("gameStatus", isEqualTo: false);
 
     return Scaffold(
       body: StreamBuilder(
-          stream: query.snapshots(), //_controller.stream,
+          stream: query.snapshots(),
           builder: (context, snapshot) {
             // check the snapshot (hasError, hasData, etc.)
             if (snapshot.hasError) {
@@ -132,7 +136,7 @@ class _JoinRoomPageState extends State<JoinRoomPage> {
                                             height: MediaQuery.of(context)
                                                     .size
                                                     .width *
-                                                0.2,
+                                                0.22,
                                             child: Padding(
                                               padding:
                                                   const EdgeInsets.fromLTRB(
@@ -168,7 +172,7 @@ class _JoinRoomPageState extends State<JoinRoomPage> {
                                               height: MediaQuery.of(context)
                                                       .size
                                                       .width *
-                                                  0.2,
+                                                  0.22,
                                               color: color,
                                               child: Padding(
                                                 padding:
@@ -194,6 +198,9 @@ class _JoinRoomPageState extends State<JoinRoomPage> {
                                                           const EdgeInsets.all(
                                                               2.0),
                                                       child: Text(
+                                                        maxLines: 1,
+                                                        overflow:
+                                                            TextOverflow.fade,
                                                         "${index + 1}. ${playerEntity.username}",
                                                         style: const TextStyle(
                                                             color: Colors.black,
@@ -217,15 +224,82 @@ class _JoinRoomPageState extends State<JoinRoomPage> {
                                                   MediaQuery.of(context)
                                                           .size
                                                           .width *
-                                                      0.2,
+                                                      0.22,
                                               enableAnimation: true,
                                               buttonColor: color,
-                                              onPressed: () {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            const WaitingRoomPage()));
+                                              onPressed: () async {
+                                                bool joined = false;
+
+                                                gameEntity.playerList
+                                                    .asMap()
+                                                    .forEach((key, value) {
+                                                  if (value['userId'] ==
+                                                      userUsecase
+                                                          .userEntity.userId) {
+                                                    joined = true;
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(
+                                                            const SnackBar(
+                                                                content: Text(
+                                                                    "YOU ARE IN THE GAME ALREADY")));
+                                                  }
+                                                });
+
+                                                if (!joined) {
+                                                  FirebaseFirestore
+                                                      firebaseFirestore =
+                                                      FirebaseFirestore
+                                                          .instance;
+
+                                                  PlayerEntity playerEntity =
+                                                      PlayerEntity(
+                                                          userId: userUsecase
+                                                              .userEntity
+                                                              .userId,
+                                                          username: userUsecase
+                                                              .userEntity
+                                                              .username,
+                                                          money: 0,
+                                                          debt: 0,
+                                                          ready: false,
+                                                          state: 1,
+                                                          afkCounter: 0,
+                                                          boardIndex: 0,
+                                                          assets: [],
+                                                          moveHistory: []);
+
+                                                  gameEntity.playerList.add(
+                                                      playerEntity.toMap());
+
+                                                  await firebaseFirestore
+                                                      .collection("games")
+                                                      .doc(gameEntity.gameId)
+                                                      .set(gameEntity.toMap())
+                                                      .then((value) {
+                                                    userUsecase.userEntity
+                                                            .ongoingGame =
+                                                        gameEntity.gameId;
+                                                    firebaseFirestore
+                                                        .collection("users")
+                                                        .doc(userUsecase
+                                                            .userEntity.userId)
+                                                        .set(userUsecase
+                                                            .userEntity
+                                                            .toMap());
+
+                                                    Navigator.pop(context);
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                WaitingRoomPage(
+                                                                  gameId:
+                                                                      gameEntity
+                                                                          .gameId,
+                                                                )));
+                                                  });
+                                                }
                                               },
                                               text: const Text(
                                                 "JOIN",

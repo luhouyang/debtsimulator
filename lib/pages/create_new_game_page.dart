@@ -42,10 +42,11 @@ class _CreateNewGamePageState extends State<CreateNewGamePage> {
                 String newId = firebaseFirestore.collection("games").doc().id;
 
                 PlayerEntity playerEntity = PlayerEntity(
+                    userId: userUsecase.userEntity.userId,
                     username: userUsecase.userEntity.username,
                     money: 0,
                     debt: 0,
-                    ready: true,
+                    ready: false,
                     state: 1,
                     afkCounter: 0,
                     boardIndex: 0,
@@ -56,20 +57,29 @@ class _CreateNewGamePageState extends State<CreateNewGamePage> {
 
                 await firebaseFirestore
                     .collection("games")
-                    .add(GameEntity(
+                    .doc(newId)
+                    .set(GameEntity(
                             roomName: roomNameTextController.text,
                             gameId: newId,
                             moveCountdown: 10000,
                             gameStatus: false,
                             numPlayer: 1,
+                            chatLog: [],
                             playerList: playerList)
                         .toMap())
                     .then((value) {
+                  userUsecase.userEntity.ongoingGame = newId;
+                  firebaseFirestore
+                      .collection("users")
+                      .doc(userUsecase.userEntity.userId)
+                      .set(userUsecase.userEntity.toMap());
+                      
                   Navigator.pop(context);
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const WaitingRoomPage()));
+                          builder: (context) =>
+                              WaitingRoomPage(gameId: newId)));
                 });
               },
               text: const Text(

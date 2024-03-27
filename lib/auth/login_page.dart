@@ -26,12 +26,12 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  var inEmailTextController = TextEditingController();
-  var inPassTextController = TextEditingController();
+  TextEditingController inEmailTextController = TextEditingController();
+  TextEditingController inPassTextController = TextEditingController();
 
-  var upEmailTextController = TextEditingController();
-  var upPassTextController = TextEditingController();
-  var userNameTextController = TextEditingController();
+  TextEditingController upEmailTextController = TextEditingController();
+  TextEditingController upPassTextController = TextEditingController();
+  TextEditingController userNameTextController = TextEditingController();
 
   // GoogleSignInAccount? _currentUser;
   // bool _isAuthorized = false; // has granted permissions?
