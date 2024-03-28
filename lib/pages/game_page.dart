@@ -144,7 +144,7 @@ class _GamePageState extends State<GamePage> {
 
             gameStateUsecase.updateCoundtdownOnFirebase(
                 playerEntity, gameEntity, playerIndex);
-
+            
             // widget
             return Scaffold(
               backgroundColor: Colors.grey[300],
