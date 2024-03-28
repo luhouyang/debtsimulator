@@ -83,7 +83,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           profileIndex: 0,
                           achievements: []);
 
-                      await FirebaseAuthServices().logout().then((value) {
+                      await FirebaseAuthServices().logout(userUsecase).then((value) {
                         userUsecase.setUser(userEntity);
                       }).then((value) => Navigator.pop(context));
                     },

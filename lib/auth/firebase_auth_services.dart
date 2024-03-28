@@ -56,7 +56,13 @@ class FirebaseAuthServices {
     }
   }
 
-  Future<void> logout() async {
+  Future<void> logout(UserUsecase userUsecase) async {
+    userUsecase.setUser(UserEntity(
+                userId: "",
+                username: "",
+                ongoingGame: "",
+                profileIndex: 0,
+                achievements: []));
     await FirebaseAuth.instance.signOut();
   }
 

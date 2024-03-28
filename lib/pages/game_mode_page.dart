@@ -120,7 +120,6 @@ class _GAMEMODEState extends State<GAMEMODE> {
                                   textAlign: TextAlign.center,
                                 ),
                               ),
-
                               const SizedBox(
                                 height: 20,
                               ),
@@ -131,12 +130,29 @@ class _GAMEMODEState extends State<GAMEMODE> {
                                 buttonColor:
                                     const Color.fromARGB(255, 243, 187, 65),
                                 onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return multiplayerDialog(userUsecase);
-                                    },
-                                  );
+                                  if (userUsecase.userEntity.userId.length <
+                                      5) {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      padding: EdgeInsets.zero,
+                                      backgroundColor: Colors.grey[500],
+                                      content: const Text(
+                                        "Loading Data",
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 12),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ));
+                                  } else {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return multiplayerDialog(userUsecase);
+                                      },
+                                    );
+                                  }
                                 },
                                 text: const Text(
                                   "Multiplayer Mode",
@@ -147,7 +163,6 @@ class _GAMEMODEState extends State<GAMEMODE> {
                                   textAlign: TextAlign.center,
                                 ),
                               ),
-
                               const SizedBox(height: 20),
                               NeuTextButton(
                                 buttonHeight: 70,
@@ -181,6 +196,8 @@ class _GAMEMODEState extends State<GAMEMODE> {
   }
 
   Dialog multiplayerDialog(UserUsecase userUsecase) {
+    double heightSizedBox = MediaQuery.of(context).size.height * 0.05;
+
     return Dialog(
       backgroundColor: Colors.transparent,
       shadowColor: Colors.transparent,
@@ -189,80 +206,130 @@ class _GAMEMODEState extends State<GAMEMODE> {
         height: MediaQuery.of(context).size.height * 0.45,
         width: MediaQuery.of(context).size.width * 0.9,
         child: userUsecase.userEntity.ongoingGame.length < 5
-        ? Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            NeuTextButton(
-              buttonHeight: MediaQuery.of(context).size.height * 0.1,
-              buttonWidth: MediaQuery.of(context).size.width * 0.7,
-              enableAnimation: true,
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const JoinRoomPage()));
-              },
-              text: const Text(
-                "Join Game",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 28),
-                textAlign: TextAlign.center,
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: SizedBox(
+                      child: IconButton(
+                          onPressed: () => Navigator.pop(context),
+                          icon: const Icon(Icons.arrow_back_ios_new_rounded)),
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        NeuTextButton(
+                          buttonHeight:
+                              MediaQuery.of(context).size.height * 0.1,
+                          buttonWidth: MediaQuery.of(context).size.width * 0.7,
+                          enableAnimation: true,
+                          onPressed: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const JoinRoomPage()));
+                          },
+                          text: const Text(
+                            "Join Game",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 28),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        SizedBox(
+                          height: heightSizedBox,
+                        ),
+                        NeuTextButton(
+                          buttonHeight:
+                              MediaQuery.of(context).size.height * 0.1,
+                          buttonWidth: MediaQuery.of(context).size.width * 0.7,
+                          enableAnimation: true,
+                          buttonColor: Colors.red,
+                          onPressed: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const CreateNewGamePage()));
+                          },
+                          text: const Text(
+                            "New Game",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 28),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        SizedBox(
+                          height: heightSizedBox,
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              )
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: SizedBox(
+                      child: IconButton(
+                          onPressed: () => Navigator.pop(context),
+                          icon: const Icon(Icons.arrow_back_ios_new_rounded)),
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        NeuTextButton(
+                          buttonHeight:
+                              MediaQuery.of(context).size.height * 0.1,
+                          buttonWidth: MediaQuery.of(context).size.width * 0.7,
+                          enableAnimation: true,
+                          onPressed: () async {
+                            await FirebaseFirestore.instance
+                                .collection("games")
+                                .doc(userUsecase.userEntity.ongoingGame)
+                                .get().then((value) {
+                                  Navigator.pop(context);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => WaitingRoomPage(
+                                          gameId: userUsecase
+                                              .userEntity.ongoingGame,
+                                              doc: value,
+                                        )));
+                                });
+                          },
+                          text: const Text(
+                            "Continue Game",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 28),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        SizedBox(
+                          height: heightSizedBox,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.05,
-            ),
-            NeuTextButton(
-              buttonHeight: MediaQuery.of(context).size.height * 0.1,
-              buttonWidth: MediaQuery.of(context).size.width * 0.7,
-              enableAnimation: true,
-              buttonColor: Colors.red,
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const CreateNewGamePage()));
-              },
-              text: const Text(
-                "New Game",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 28),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ],
-        )
-        : Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            NeuTextButton(
-              buttonHeight: MediaQuery.of(context).size.height * 0.1,
-              buttonWidth: MediaQuery.of(context).size.width * 0.7,
-              enableAnimation: true,
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => WaitingRoomPage(gameId: userUsecase.userEntity.ongoingGame,)));
-              },
-              text: const Text(
-                "Continue Game",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 28),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

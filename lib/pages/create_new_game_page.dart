@@ -26,8 +26,8 @@ class _CreateNewGamePageState extends State<CreateNewGamePage> {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 30, 16, 0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
+            const SizedBox(height: 100,),
             inputTextWidget(
                 "Room Name", roomNameVerify, roomNameTextController),
             NeuTextButton(
@@ -61,7 +61,8 @@ class _CreateNewGamePageState extends State<CreateNewGamePage> {
                     .set(GameEntity(
                             roomName: roomNameTextController.text,
                             gameId: newId,
-                            moveCountdown: 10000,
+                            moveCountdown: 20000,
+                            currentMove: 0,
                             gameStatus: false,
                             numPlayer: 1,
                             chatLog: [],
@@ -73,14 +74,22 @@ class _CreateNewGamePageState extends State<CreateNewGamePage> {
                       .collection("users")
                       .doc(userUsecase.userEntity.userId)
                       .set(userUsecase.userEntity.toMap());
-                      
-                  Navigator.pop(context);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              WaitingRoomPage(gameId: newId)));
                 });
+
+                await FirebaseFirestore.instance
+                                .collection("games")
+                                .doc(newId)
+                                .get().then((value) {
+                                  Navigator.pop(context);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => WaitingRoomPage(
+                                          gameId: userUsecase
+                                              .userEntity.ongoingGame,
+                                              doc: value,
+                                        )));
+                                });
               },
               text: const Text(
                 "New Game",

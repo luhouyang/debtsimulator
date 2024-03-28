@@ -1,9 +1,12 @@
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:debtsimulator/components/circular_percentage.dart';
 import 'package:debtsimulator/components/game_tiles.dart';
 import 'package:debtsimulator/components/money_card.dart';
 import 'package:debtsimulator/entities/chat_entity.dart';
 import 'package:debtsimulator/entities/game_entity.dart';
 import 'package:debtsimulator/entities/player_entity.dart';
+import 'package:debtsimulator/useCase/game_state_usecase.dart';
 import 'package:debtsimulator/useCase/game_tile_usecase.dart';
 import 'package:debtsimulator/useCase/user_usecase.dart';
 import 'package:flutter/material.dart';
@@ -21,21 +24,45 @@ class GamePage extends StatefulWidget {
 }
 
 class _GamePageState extends State<GamePage> {
+  CollectionReference gameColRef =
+      FirebaseFirestore.instance.collection("games");
   TextEditingController chatTextController = TextEditingController();
+
+  bool timerStarted = false;
+  Timer timer = Timer(const Duration(milliseconds: 1), () {});
+
+  void checkMoveCounter(GameStateUsecase gameStateUsecase) {
+    timer = Timer.periodic(const Duration(milliseconds: 50), (timer) async {
+      gameStateUsecase.updateCountdown();
+    });
+  }
+
+  late DocumentReference query;
+  StreamController streamController = StreamController();
+  @override
+  void initState() {
+    query = FirebaseFirestore.instance.collection("games").doc(widget.gameId);
+    streamController.addStream(query.snapshots());
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    streamController.close();
+    timer.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     UserUsecase userUsecase = Provider.of<UserUsecase>(context, listen: false);
 
     return Consumer<GameTileUseCase>(
-      builder: (context, value, child) {
+      builder: (context, gameTileUseCase, child) {
         return StreamBuilder(
-          stream: FirebaseFirestore.instance
-              .collection("games")
-              .doc(widget.gameId)
-              .snapshots(),
+          stream: streamController.stream,
           builder: (context, snapshot) {
-            // check the snapshot (hasError, hasData, etc.)
+            // error handling
             if (snapshot.hasError) {
               return Center(child: Text("Error: ${snapshot.error}"));
             } else if (snapshot.connectionState == ConnectionState.waiting) {
@@ -55,6 +82,7 @@ class _GamePageState extends State<GamePage> {
                 ),
               );
             }
+            // game logic
             GameEntity gameEntity = GameEntity.fromMap(
                 snapshot.data!.data() as Map<String, dynamic>);
 
@@ -68,6 +96,56 @@ class _GamePageState extends State<GamePage> {
             PlayerEntity playerEntity =
                 PlayerEntity.fromMap(gameEntity.playerList[playerIndex]);
 
+            Future<void> setNextPlayer() async {
+              if (playerEntity.state == 1) {
+                playerEntity.state = 0;
+                gameEntity.playerList[playerIndex] = playerEntity.toMap();
+
+                int nextPlayerIndex = -1;
+                gameEntity.playerList.asMap().forEach((key, value) {
+                  if (key > playerIndex) {
+                    PlayerEntity pe = PlayerEntity.fromMap(value);
+                    if (pe.state != -1) {
+                      nextPlayerIndex = key;
+                    }
+                  }
+                });
+                if (nextPlayerIndex == -1) {
+                  gameEntity.playerList.asMap().forEach((key, value) {
+                    if (key < playerIndex) {
+                      PlayerEntity pe = PlayerEntity.fromMap(value);
+                      if (pe.state != -1) {
+                        nextPlayerIndex = key;
+                      }
+                    }
+                  });
+
+                  PlayerEntity nextPlayerEntity = PlayerEntity.fromMap(
+                      gameEntity.playerList[nextPlayerIndex]);
+
+                  if (nextPlayerEntity.state != -1) {
+                    nextPlayerEntity.state = 1;
+                    gameEntity.playerList[nextPlayerIndex] =
+                        nextPlayerEntity.toMap();
+                    gameEntity.moveCountdown == gameEntity.moveCountdownLimit;
+                    await gameColRef.doc(widget.gameId).set(gameEntity.toMap());
+                  }
+                }
+              }
+            }
+
+            GameStateUsecase gameStateUsecase =
+                Provider.of<GameStateUsecase>(context, listen: false);
+
+            if (!timerStarted) {
+              timerStarted = true;
+              checkMoveCounter(gameStateUsecase);
+            }
+
+            gameStateUsecase.updateCoundtdownOnFirebase(
+                playerEntity, gameEntity, playerIndex);
+
+            // widget
             return Scaffold(
               backgroundColor: Colors.grey[300],
               body: Padding(
@@ -86,10 +164,14 @@ class _GamePageState extends State<GamePage> {
                     Column(
                       children: [
                         NeuContainer(
-                          color: value.gameTileMap[value.getTileIndex()]!.color,
+                          color: gameTileUseCase
+                              .gameTileMap[gameTileUseCase.getTileIndex()]!
+                              .color,
                           width: double.infinity,
                           child: Text(
-                            value.gameTileMap[value.getTileIndex()]!.title,
+                            gameTileUseCase
+                                .gameTileMap[gameTileUseCase.getTileIndex()]!
+                                .title,
                             style: const TextStyle(
                                 fontWeight: FontWeight.w900, fontSize: 28),
                             textAlign: TextAlign.center,
@@ -100,8 +182,9 @@ class _GamePageState extends State<GamePage> {
                           color: Colors.white,
                           child: Text(
                             style: const TextStyle(fontSize: 18),
-                            value
-                                .gameTileMap[value.getTileIndex()]!.description,
+                            gameTileUseCase
+                                .gameTileMap[gameTileUseCase.getTileIndex()]!
+                                .description,
                             textAlign: TextAlign.center,
                           ),
                         )
@@ -290,20 +373,24 @@ class _GamePageState extends State<GamePage> {
                 width: 80,
                 child: FittedBox(
                   child: FloatingActionButton(
-                    backgroundColor: Colors.red,
-                    onPressed: () {
-                      value.moveToNext();
-                      debugPrint("Changed to ${value.currentIndex}");
-                    },
-                    shape: const CircleBorder(),
-                    child: const Text(
-                      "GO",
-                      style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    ),
-                  ),
+                      backgroundColor: Colors.red,
+                      onPressed: () {
+                        gameTileUseCase.moveToNext();
+                        debugPrint(
+                            "Changed to ${gameTileUseCase.currentIndex}");
+
+                        setNextPlayer();
+                      },
+                      shape: const CircleBorder(),
+                      child: const CircularPercentage(
+                        center: Text(
+                          "GO",
+                          style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                      )),
                 ),
               ),
             );
@@ -313,7 +400,7 @@ class _GamePageState extends State<GamePage> {
     );
   }
 
-  Widget playerStatus(PlayerEntity playerEntity) {
+  Widget playerStatusCard(PlayerEntity playerEntity) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
       child: NeuContainer(
@@ -545,7 +632,7 @@ class _GamePageState extends State<GamePage> {
               child: ListView.builder(
                 itemCount: playerList.length,
                 itemBuilder: (context, index) {
-                  return playerStatus(playerList[index]);
+                  return playerStatusCard(playerList[index]);
                 },
               ),
             )

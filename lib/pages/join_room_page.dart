@@ -30,7 +30,7 @@ class _JoinRoomPageState extends State<JoinRoomPage> {
       body: StreamBuilder(
           stream: query.snapshots(),
           builder: (context, snapshot) {
-            // check the snapshot (hasError, hasData, etc.)
+            // error handling
             if (snapshot.hasError) {
               return Center(child: Text("Error: ${snapshot.error}"));
             } else if (snapshot.connectionState == ConnectionState.waiting) {
@@ -39,6 +39,7 @@ class _JoinRoomPageState extends State<JoinRoomPage> {
                     color: Colors.blue, size: 40.0),
               );
             }
+            // widget
             return Padding(
               padding: const EdgeInsets.fromLTRB(16, 40, 16, 0),
               child: SingleChildScrollView(
@@ -193,19 +194,16 @@ class _JoinRoomPageState extends State<JoinRoomPage> {
                                                                     .playerList[
                                                                 index]);
 
-                                                    return Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              2.0),
-                                                      child: Text(
-                                                        maxLines: 1,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        "${index + 1}. ${playerEntity.username}",
-                                                        style: const TextStyle(
-                                                            color: Colors.black,
-                                                            fontSize: 16),
-                                                      ),
+                                                    return Text(
+                                                      maxLines: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      "${index + 1}. ${playerEntity.username}",
+                                                      style: const TextStyle(
+                                                          color: Colors.black,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 12),
                                                     );
                                                   },
                                                 ),
@@ -263,7 +261,7 @@ class _JoinRoomPageState extends State<JoinRoomPage> {
                                                           money: 0,
                                                           debt: 0,
                                                           ready: false,
-                                                          state: 1,
+                                                          state: 0,
                                                           afkCounter: 0,
                                                           boardIndex: 0,
                                                           assets: [],
@@ -288,16 +286,24 @@ class _JoinRoomPageState extends State<JoinRoomPage> {
                                                         .set(userUsecase
                                                             .userEntity
                                                             .toMap());
+                                                  });
 
+                                                  await FirebaseFirestore
+                                                      .instance
+                                                      .collection("games")
+                                                      .doc(gameEntity.gameId)
+                                                      .get()
+                                                      .then((value) {
                                                     Navigator.pop(context);
                                                     Navigator.push(
                                                         context,
                                                         MaterialPageRoute(
                                                             builder: (context) =>
                                                                 WaitingRoomPage(
-                                                                  gameId:
-                                                                      gameEntity
-                                                                          .gameId,
+                                                                  gameId: userUsecase
+                                                                      .userEntity
+                                                                      .ongoingGame,
+                                                                  doc: value,
                                                                 )));
                                                   });
                                                 }

@@ -9,27 +9,28 @@ import 'package:neubrutalism_ui/neubrutalism_ui.dart';
 import 'package:provider/provider.dart';
 
 class WaitingRoomPage extends StatefulWidget {
+  final DocumentSnapshot doc;
   final String gameId;
 
-  const WaitingRoomPage({super.key, required this.gameId});
+  const WaitingRoomPage({super.key, required this.gameId, required this.doc});
 
   @override
   State<WaitingRoomPage> createState() => _WaitingRoomPageState();
 }
 
 class _WaitingRoomPageState extends State<WaitingRoomPage> {
+  bool gameStarting = false;
+
   @override
   Widget build(BuildContext context) {
     UserUsecase userUsecase = Provider.of<UserUsecase>(context, listen: false);
 
     return Scaffold(
-        body: StreamBuilder(
-      stream: FirebaseFirestore.instance
-          .collection("games")
-          .doc(widget.gameId)
-          .snapshots(),
+        body: StreamBuilder<DocumentSnapshot>(
+      stream: FirebaseFirestore.instance.collection("games").doc(widget.gameId).snapshots(),
+      initialData: widget.doc,
       builder: (context, snapshot) {
-        // check the snapshot (hasError, hasData, etc.)
+        // error handling
         if (snapshot.hasError) {
           return Center(child: Text("Error: ${snapshot.error}"));
         } else if (snapshot.connectionState == ConnectionState.waiting) {
@@ -49,6 +50,7 @@ class _WaitingRoomPageState extends State<WaitingRoomPage> {
             ),
           );
         } else {
+          // logic in else clause for extra safety
           GameEntity gameEntity =
               GameEntity.fromMap(snapshot.data!.data() as Map<String, dynamic>);
 
@@ -64,6 +66,7 @@ class _WaitingRoomPageState extends State<WaitingRoomPage> {
             });
 
             if (readyCounter == gameEntity.numPlayer) {
+              gameStarting = true;
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 gameEntity.gameStatus = true;
 
@@ -95,6 +98,7 @@ class _WaitingRoomPageState extends State<WaitingRoomPage> {
           PlayerEntity playerEntity =
               PlayerEntity.fromMap(gameEntity.playerList[playerIndex]);
 
+          // widget
           return Padding(
             padding: const EdgeInsets.fromLTRB(15, 50, 15, 20),
             child: Column(
@@ -116,11 +120,12 @@ class _WaitingRoomPageState extends State<WaitingRoomPage> {
                     itemBuilder: (context, index) {
                       return index < gameEntity.playerList.length
                           ? () {
-                              PlayerEntity playerEntity = PlayerEntity.fromMap(
-                                  gameEntity.playerList[index]);
+                              PlayerEntity readyPlayerEntity =
+                                  PlayerEntity.fromMap(
+                                      gameEntity.playerList[index]);
 
                               return NeuContainer(
-                                color: playerEntity.ready
+                                color: readyPlayerEntity.ready
                                     ? Colors.green
                                     : Colors.red,
                                 height:
@@ -149,7 +154,7 @@ class _WaitingRoomPageState extends State<WaitingRoomPage> {
                                       ),
                                     ),
                                     Text(
-                                      playerEntity.username,
+                                      readyPlayerEntity.username,
                                       style: const TextStyle(
                                           color: Colors.black,
                                           fontSize: 14,
@@ -159,7 +164,9 @@ class _WaitingRoomPageState extends State<WaitingRoomPage> {
                                       height: 20,
                                     ),
                                     Text(
-                                      playerEntity.ready ? "READY" : "WAITING",
+                                      readyPlayerEntity.ready
+                                          ? "READY"
+                                          : "WAITING",
                                       style: const TextStyle(
                                           color: Colors.black,
                                           fontSize: 14,
@@ -220,14 +227,16 @@ class _WaitingRoomPageState extends State<WaitingRoomPage> {
                       buttonHeight: MediaQuery.of(context).size.width * 0.2,
                       enableAnimation: true,
                       onPressed: () async {
-                        playerEntity.ready = !playerEntity.ready;
-                        gameEntity.playerList[playerIndex] =
-                            playerEntity.toMap();
+                        if (!gameStarting) {
+                          playerEntity.ready = !playerEntity.ready;
+                          gameEntity.playerList[playerIndex] =
+                              playerEntity.toMap();
 
-                        await FirebaseFirestore.instance
-                            .collection("games")
-                            .doc(widget.gameId)
-                            .set(gameEntity.toMap());
+                          await FirebaseFirestore.instance
+                              .collection("games")
+                              .doc(widget.gameId)
+                              .set(gameEntity.toMap());
+                        }
                       },
                       text: Text(
                         playerEntity.ready ? "WAIT" : "READY",
@@ -243,40 +252,42 @@ class _WaitingRoomPageState extends State<WaitingRoomPage> {
                       enableAnimation: true,
                       buttonColor: Colors.red,
                       onPressed: () async {
-                        FirebaseFirestore firebaseFirestore =
-                            FirebaseFirestore.instance;
+                        if (!gameStarting) {
+                          FirebaseFirestore firebaseFirestore =
+                              FirebaseFirestore.instance;
 
-                        gameEntity.playerList.removeAt(playerIndex);
-                        gameEntity.numPlayer--;
+                          gameEntity.playerList.removeAt(playerIndex);
+                          gameEntity.numPlayer--;
 
-                        if (gameEntity.playerList.isEmpty) {
-                          await firebaseFirestore
-                              .collection("games")
-                              .doc(widget.gameId)
-                              .delete()
-                              .then((value) {
-                            userUsecase.userEntity.ongoingGame = "";
-                            firebaseFirestore
-                                .collection("users")
-                                .doc(userUsecase.userEntity.userId)
-                                .set(userUsecase.userEntity.toMap());
+                          if (gameEntity.playerList.isEmpty) {
+                            await firebaseFirestore
+                                .collection("games")
+                                .doc(widget.gameId)
+                                .delete()
+                                .then((value) {
+                              userUsecase.userEntity.ongoingGame = "";
+                              firebaseFirestore
+                                  .collection("users")
+                                  .doc(userUsecase.userEntity.userId)
+                                  .set(userUsecase.userEntity.toMap());
 
-                            Navigator.pop(context);
-                          });
-                        } else {
-                          await firebaseFirestore
-                              .collection("games")
-                              .doc(widget.gameId)
-                              .set(gameEntity.toMap())
-                              .then((value) {
-                            userUsecase.userEntity.ongoingGame = "";
-                            firebaseFirestore
-                                .collection("users")
-                                .doc(userUsecase.userEntity.userId)
-                                .set(userUsecase.userEntity.toMap());
+                              Navigator.pop(context);
+                            });
+                          } else {
+                            await firebaseFirestore
+                                .collection("games")
+                                .doc(widget.gameId)
+                                .set(gameEntity.toMap())
+                                .then((value) {
+                              userUsecase.userEntity.ongoingGame = "";
+                              firebaseFirestore
+                                  .collection("users")
+                                  .doc(userUsecase.userEntity.userId)
+                                  .set(userUsecase.userEntity.toMap());
 
-                            Navigator.pop(context);
-                          });
+                              Navigator.pop(context);
+                            });
+                          }
                         }
                       },
                       text: const Text(

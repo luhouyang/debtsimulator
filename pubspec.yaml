@@ -20,6 +20,7 @@ dependencies:
   email_validator: ^2.1.17
   google_sign_in: ^6.2.1
   neubrutalism_ui: ^2.0.2
+  percent_indicator: ^4.2.3
 
 dev_dependencies:
   flutter_test:
