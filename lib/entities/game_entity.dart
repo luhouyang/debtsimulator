@@ -1,11 +1,10 @@
 class GameEntity {
   int maxPlayer = 4;
-  double moveCountdownLimit = 20000; // miliseconds
+  double moveCountdownLimit = 30000; // miliseconds
 
   final String roomName;
   final String gameId;
   bool gameStatus; // 0 (not yet), 1 (started)
-  double moveCountdown; // in miliseconds
   int currentMove;
   int numPlayer;
   List<Map<String, dynamic>> chatLog;
@@ -14,7 +13,6 @@ class GameEntity {
   GameEntity(
       {required this.roomName,
       required this.gameId,
-      required this.moveCountdown,
       required this.currentMove,
       required this.gameStatus,
       required this.numPlayer,
@@ -25,7 +23,6 @@ class GameEntity {
     return GameEntity(
       roomName: map['roomName'] as String,
       gameId: map['gameId'] as String,
-      moveCountdown: double.tryParse(map['moveCountdown'].toString())!,
       currentMove: map['currentMove'] as int,
       gameStatus: map['gameStatus'] as bool,
       numPlayer: map['numPlayer'] as int,
@@ -38,7 +35,6 @@ class GameEntity {
     return {
       'roomName': roomName,
       'gameId': gameId,
-      'moveCountdown': moveCountdown,
       'currentMove': currentMove,
       'gameStatus': gameStatus,
       'numPlayer': numPlayer,

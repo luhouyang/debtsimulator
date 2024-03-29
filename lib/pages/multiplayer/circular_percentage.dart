@@ -20,10 +20,9 @@ class _CircularPercentageState extends State<CircularPercentage> {
         return CircularPercentIndicator(
           radius: 28,
           circularStrokeCap: CircularStrokeCap.round,
-          percent:
-              gameStateUsecase.moveCountdown / 20000,
+          percent: gameStateUsecase.moveCountdown >= 0 ?  gameStateUsecase.moveCountdown / 30000 : 0,
           progressColor: Colors.amber,
-          backgroundColor: Colors.red,
+          backgroundColor: Colors.transparent,
           lineWidth: 3.0,
           center: widget.center
         );

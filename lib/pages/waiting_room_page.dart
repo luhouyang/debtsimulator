@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:debtsimulator/entities/game_entity.dart';
 import 'package:debtsimulator/entities/player_entity.dart';
-import 'package:debtsimulator/pages/game_page.dart';
+import 'package:debtsimulator/pages/multiplayer/game_page.dart';
+import 'package:debtsimulator/useCase/game_state_usecase.dart';
 import 'package:debtsimulator/useCase/user_usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -27,7 +28,10 @@ class _WaitingRoomPageState extends State<WaitingRoomPage> {
 
     return Scaffold(
         body: StreamBuilder<DocumentSnapshot>(
-      stream: FirebaseFirestore.instance.collection("games").doc(widget.gameId).snapshots(),
+      stream: FirebaseFirestore.instance
+          .collection("games")
+          .doc(widget.gameId)
+          .snapshots(),
       initialData: widget.doc,
       builder: (context, snapshot) {
         // error handling
@@ -67,7 +71,11 @@ class _WaitingRoomPageState extends State<WaitingRoomPage> {
 
             if (readyCounter == gameEntity.numPlayer) {
               gameStarting = true;
+
               WidgetsBinding.instance.addPostFrameCallback((_) {
+                GameStateUsecase gameStateUsecase =
+                  Provider.of<GameStateUsecase>(context, listen: false);
+              gameStateUsecase.setCurrentMove(gameEntity.currentMove);
                 gameEntity.gameStatus = true;
 
                 FirebaseFirestore.instance
@@ -81,6 +89,7 @@ class _WaitingRoomPageState extends State<WaitingRoomPage> {
                       MaterialPageRoute(
                         builder: (context) => GamePage(
                           gameId: widget.gameId,
+                          doc: snapshot.data!,
                         ),
                       ));
                 });

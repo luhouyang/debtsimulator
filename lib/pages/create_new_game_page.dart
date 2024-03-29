@@ -61,7 +61,6 @@ class _CreateNewGamePageState extends State<CreateNewGamePage> {
                     .set(GameEntity(
                             roomName: roomNameTextController.text,
                             gameId: newId,
-                            moveCountdown: 20000,
                             currentMove: 0,
                             gameStatus: false,
                             numPlayer: 1,

@@ -4,27 +4,36 @@ import 'package:debtsimulator/entities/player_entity.dart';
 import 'package:flutter/material.dart';
 
 class GameStateUsecase extends ChangeNotifier {
+  bool resetTimer = false;
   int currentMove = 0;
-  double moveCountdown = 20000;
+  double moveCountdown = 30000;
+
+  void setCurrentMove(int move) {
+    currentMove = move;
+    notifyListeners();
+  }
 
   void updateCountdown() {
-    if (moveCountdown > 0) {
-      moveCountdown -= 50;
-      debugPrint(moveCountdown.toString());
-    } else {
+    moveCountdown -= 50;
+    //debugPrint(moveCountdown.toString());
+    if (moveCountdown < 0 && !resetTimer) {
+      resetTimer = true;
     }
     notifyListeners();
   }
 
-  void updateCoundtdownOnFirebase(
-      PlayerEntity playerEntity, GameEntity gameEntity, int playerIndex) {
-    if (gameEntity.currentMove != currentMove) {
-      moveCountdown = 20000;
-      currentMove = gameEntity.currentMove;
-      notifyListeners();
+  Future<void> updateCoundtdownOnFirebase(
+      PlayerEntity playerEntity, GameEntity gameEntity, int playerIndex) async {
+    if (gameEntity.currentMove != currentMove || resetTimer) {
       if (playerEntity.state == 1) {
+        if (resetTimer) {
+          playerEntity.afkCounter++;
+        }
+        gameEntity.currentMove++; // allow countdown to be resetted once without change in database
+        resetTimer = false;
+        moveCountdown = 30000;
+        currentMove = gameEntity.currentMove;
         playerEntity.state = 0;
-        playerEntity.afkCounter++;
         gameEntity.playerList[playerIndex] = playerEntity.toMap();
 
         int nextPlayerIndex = -1;
@@ -47,19 +56,43 @@ class GameStateUsecase extends ChangeNotifier {
           });
         }
 
+        if (nextPlayerIndex == -1) {
+        debugPrint("GAME ENDED"); // TODO: move ending to gamestate
+        /* this code already works
+        await FirebaseFirestore.instance
+            .collection("games")
+            .doc(gameEntity.gameId)
+            .delete()
+            .then((value) {
+          gameEntity.playerList.asMap().forEach((key, value) {
+            PlayerEntity deletePE = PlayerEntity.fromMap(value);
+            FirebaseFirestore.instance
+                .collection("users")
+                .doc(deletePE.userId)
+                .set({"ongoingGame": ""}, SetOptions(merge: true));
+          });
+        });*/
+      } else {
         PlayerEntity nextPlayerEntity =
-            PlayerEntity.fromMap(gameEntity.playerList[nextPlayerIndex]);
+          PlayerEntity.fromMap(gameEntity.playerList[nextPlayerIndex]);
 
-        if (nextPlayerEntity.state != -1) {
-          nextPlayerEntity.state = 1;
-          gameEntity.playerList[nextPlayerIndex] = nextPlayerEntity.toMap();
-          gameEntity.moveCountdown == gameEntity.moveCountdownLimit;
-          FirebaseFirestore.instance
-              .collection("games")
-              .doc(gameEntity.gameId)
-              .set(gameEntity.toMap());
-        } else {}
-        notifyListeners();
+        nextPlayerEntity.state = 1;
+        gameEntity.playerList[nextPlayerIndex] = nextPlayerEntity.toMap();
+        await FirebaseFirestore.instance
+            .collection("games")
+            .doc(gameEntity.gameId)
+            .set(gameEntity.toMap())
+            .then((value) {
+              notifyListeners();
+            });
+      }
+      } else {
+        if (gameEntity.currentMove != currentMove) {
+          resetTimer = false;
+          moveCountdown = 30000;
+          currentMove = gameEntity.currentMove;
+          notifyListeners();
+        }
       }
     }
   }

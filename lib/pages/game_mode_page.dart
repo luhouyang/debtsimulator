@@ -148,8 +148,10 @@ class _GAMEMODEState extends State<GAMEMODE> {
                                   } else {
                                     showDialog(
                                       context: context,
+                                      barrierDismissible: false,
                                       builder: (context) {
-                                        return multiplayerDialog(userUsecase);
+                                        return multiplayerDialog(
+                                            userUsecase, context);
                                       },
                                     );
                                   }
@@ -195,7 +197,8 @@ class _GAMEMODEState extends State<GAMEMODE> {
                 ))));
   }
 
-  Dialog multiplayerDialog(UserUsecase userUsecase) {
+  Dialog multiplayerDialog(
+      UserUsecase userUsecase, BuildContext parentContext) {
     double heightSizedBox = MediaQuery.of(context).size.height * 0.05;
 
     return Dialog(
@@ -301,20 +304,61 @@ class _GAMEMODEState extends State<GAMEMODE> {
                             await FirebaseFirestore.instance
                                 .collection("games")
                                 .doc(userUsecase.userEntity.ongoingGame)
-                                .get().then((value) {
-                                  Navigator.pop(context);
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => WaitingRoomPage(
-                                          gameId: userUsecase
-                                              .userEntity.ongoingGame,
-                                              doc: value,
-                                        )));
-                                });
+                                .get()
+                                .then((value) {
+                              Navigator.pop(context);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => WaitingRoomPage(
+                                            gameId: userUsecase
+                                                .userEntity.ongoingGame,
+                                            doc: value,
+                                          )));
+                            });
                           },
                           text: const Text(
                             "Continue Game",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 28),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        SizedBox(
+                          height: heightSizedBox,
+                        ),
+                        NeuTextButton(
+                          buttonColor: Colors.blue,
+                          buttonHeight:
+                              MediaQuery.of(context).size.height * 0.1,
+                          buttonWidth: MediaQuery.of(context).size.width * 0.7,
+                          enableAnimation: true,
+                          onPressed: () async {
+                            String uid = FirebaseAuth.instance.currentUser!.uid;
+                            DocumentSnapshot doc = await FirebaseFirestore
+                                .instance
+                                .collection("users")
+                                .doc(uid)
+                                .get();
+                            userUsecase
+                                .setUser(UserEntity.fromMap(
+                                    doc.data() as Map<String, dynamic>))
+                                .then((value) {
+                              Navigator.pop(context);
+                              showDialog(
+                                context: parentContext,
+                                barrierDismissible: false,
+                                builder: (context) {
+                                  return multiplayerDialog(
+                                      userUsecase, context);
+                                },
+                              );
+                            });
+                          },
+                          text: const Text(
+                            "Refresh",
                             style: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
