@@ -36,10 +36,16 @@ class _StatusButtonState extends State<StatusButton> {
   }
 
   Widget playerStatusCard(PlayerEntity playerEntity) {
+    double difference = playerEntity.money - playerEntity.debt;
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
       child: NeuContainer(
         height: 100,
+        color: difference < -100 ? Colors.red
+        : difference < 0 ? Colors.amber
+        : difference < 100 ? Colors.grey
+        : Colors.green,
         child: Row(
           children: [
             Container(

@@ -180,7 +180,7 @@ class _GAMEMODEState extends State<GAMEMODE> {
                                               const ProfilePage()));
                                 },
                                 text: const Text(
-                                  "Badges",
+                                  "Profile",
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.bold,

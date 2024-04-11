@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:debtsimulator/entities/game_entity.dart';
 import 'package:debtsimulator/entities/player_entity.dart';
+import 'package:debtsimulator/entities/user_entity.dart';
 import 'package:debtsimulator/pages/multiplayer/game_page.dart';
 import 'package:debtsimulator/useCase/game_state_usecase.dart';
 import 'package:debtsimulator/useCase/user_usecase.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:neubrutalism_ui/neubrutalism_ui.dart';
@@ -44,14 +46,50 @@ class _WaitingRoomPageState extends State<WaitingRoomPage> {
           );
         }
         if (!snapshot.hasData || snapshot.data!.data() == null) {
-          return const Center(
-            child: Text(
-              "No Data",
-              style: TextStyle(
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Text(
+                "No Data\nor\nGame Ended\nPress \"Refresh\"",
+                textAlign: TextAlign.center,
+                style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
-                  fontSize: 28),
-            ),
+                  fontSize: 28,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: NeuTextButton(
+                  buttonColor: Colors.blue,
+                  buttonHeight: MediaQuery.of(context).size.height * 0.1,
+                  buttonWidth: MediaQuery.of(context).size.width * 0.7,
+                  enableAnimation: true,
+                  onPressed: () async {
+                    String uid = FirebaseAuth.instance.currentUser!.uid;
+                    DocumentSnapshot doc = await FirebaseFirestore.instance
+                        .collection("users")
+                        .doc(uid)
+                        .get();
+                    userUsecase
+                        .setUser(UserEntity.fromMap(
+                            doc.data() as Map<String, dynamic>))
+                        .then((value) {
+                      Navigator.pop(context);
+                    });
+                  },
+                  text: const Text(
+                    "Refresh",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 28),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            ],
           );
         } else {
           // logic in else clause for extra safety
@@ -74,8 +112,8 @@ class _WaitingRoomPageState extends State<WaitingRoomPage> {
 
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 GameStateUsecase gameStateUsecase =
-                  Provider.of<GameStateUsecase>(context, listen: false);
-              gameStateUsecase.setCurrentMove(gameEntity.currentMove);
+                    Provider.of<GameStateUsecase>(context, listen: false);
+                gameStateUsecase.setCurrentMove(gameEntity.currentMove);
                 gameEntity.gameStatus = true;
 
                 FirebaseFirestore.instance

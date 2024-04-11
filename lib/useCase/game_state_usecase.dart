@@ -4,9 +4,16 @@ import 'package:debtsimulator/entities/player_entity.dart';
 import 'package:flutter/material.dart';
 
 class GameStateUsecase extends ChangeNotifier {
+  bool gameEnded = false;
+
   bool resetTimer = false;
   int currentMove = 0;
   double moveCountdown = 30000;
+
+  void setGameEnded() {
+    gameEnded = true;
+    notifyListeners();
+  }
 
   void setCurrentMove(int move) {
     currentMove = move;
@@ -15,25 +22,30 @@ class GameStateUsecase extends ChangeNotifier {
 
   void updateCountdown() {
     moveCountdown -= 50;
-    //debugPrint(moveCountdown.toString());
     if (moveCountdown < 0 && !resetTimer) {
       resetTimer = true;
     }
     notifyListeners();
   }
 
-  Future<void> updateCoundtdownOnFirebase(
+  Future<void> updateCoundtdown(
       PlayerEntity playerEntity, GameEntity gameEntity, int playerIndex) async {
     if (gameEntity.currentMove != currentMove || resetTimer) {
       if (playerEntity.state == 1) {
         if (resetTimer) {
           playerEntity.afkCounter++;
         }
-        gameEntity.currentMove++; // allow countdown to be resetted once without change in database
+        gameEntity
+            .currentMove++; // allow countdown to be resetted once without change in database
         resetTimer = false;
         moveCountdown = 30000;
         currentMove = gameEntity.currentMove;
+
         playerEntity.state = 0;
+        if (playerEntity.afkCounter >= 3) {
+          playerEntity.state = -1;
+        }
+
         gameEntity.playerList[playerIndex] = playerEntity.toMap();
 
         int nextPlayerIndex = -1;
@@ -57,35 +69,37 @@ class GameStateUsecase extends ChangeNotifier {
         }
 
         if (nextPlayerIndex == -1) {
-        debugPrint("GAME ENDED"); // TODO: move ending to gamestate
-        /* this code already works
-        await FirebaseFirestore.instance
-            .collection("games")
-            .doc(gameEntity.gameId)
-            .delete()
-            .then((value) {
-          gameEntity.playerList.asMap().forEach((key, value) {
-            PlayerEntity deletePE = PlayerEntity.fromMap(value);
-            FirebaseFirestore.instance
-                .collection("users")
-                .doc(deletePE.userId)
-                .set({"ongoingGame": ""}, SetOptions(merge: true));
-          });
-        });*/
-      } else {
-        PlayerEntity nextPlayerEntity =
-          PlayerEntity.fromMap(gameEntity.playerList[nextPlayerIndex]);
-
-        nextPlayerEntity.state = 1;
-        gameEntity.playerList[nextPlayerIndex] = nextPlayerEntity.toMap();
-        await FirebaseFirestore.instance
-            .collection("games")
-            .doc(gameEntity.gameId)
-            .set(gameEntity.toMap())
-            .then((value) {
-              notifyListeners();
+          debugPrint("GAME ENDED"); // TODO: move ending to gamestate
+          /* this code already works*/
+          await FirebaseFirestore.instance
+              .collection("games")
+              .doc(gameEntity.gameId)
+              .delete()
+              .then((value) {
+            gameEntity.playerList.asMap().forEach((key, value) {
+              PlayerEntity deletePE = PlayerEntity.fromMap(value);
+              FirebaseFirestore.instance
+                  .collection("users")
+                  .doc(deletePE.userId)
+                  .set({"ongoingGame": ""}, SetOptions(merge: true));
             });
-      }
+            gameEnded = true;
+            notifyListeners();
+          });
+        } else {
+          PlayerEntity nextPlayerEntity =
+              PlayerEntity.fromMap(gameEntity.playerList[nextPlayerIndex]);
+
+          nextPlayerEntity.state = 1;
+          gameEntity.playerList[nextPlayerIndex] = nextPlayerEntity.toMap();
+          await FirebaseFirestore.instance
+              .collection("games")
+              .doc(gameEntity.gameId)
+              .set(gameEntity.toMap())
+              .then((value) {
+            notifyListeners();
+          });
+        }
       } else {
         if (gameEntity.currentMove != currentMove) {
           resetTimer = false;
@@ -95,5 +109,15 @@ class GameStateUsecase extends ChangeNotifier {
         }
       }
     }
+  }
+
+  updateMoneyDebt(PlayerEntity playerEntity, GameEntity gameEntity,
+      int playerIndex, double money, double debt, int boardIndex) {
+    playerEntity.boardIndex = boardIndex;
+    playerEntity.money += money;
+    playerEntity.debt += debt;
+
+    gameEntity.playerList[playerIndex] = playerEntity.toMap();
+    notifyListeners();
   }
 }

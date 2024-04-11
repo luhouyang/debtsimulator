@@ -35,6 +35,8 @@ flutter:
   assets:
   - assets/monopoly.png
   - assets/profile_placeholder.jpg
+  - assets/CREAM_badge.png
+  - assets/FIRE_BASED_badge.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

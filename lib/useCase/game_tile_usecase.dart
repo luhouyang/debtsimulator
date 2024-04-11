@@ -15,90 +15,90 @@ class GameTileUseCase extends ChangeNotifier {
     ),
     2: GameTileEntity(
       index: 2,
-      title: "Start",
-      description: "GG DEBT.\nLose RM200*100.",
+      title: "GG Debt",
+      description: "You fell in a hole and lost your change.\nLose RM20.",
       color: Colors.white,
       money: 0,
-      debt: 20000,
+      debt: 20,
     ),
     3: GameTileEntity(
       index: 3,
-      title: "Start",
-      description: "New beginning.\nClaim RM200.",
+      title: "Birthday",
+      description: "Its your birthday.\nClaim RM50 from your parents.",
       color: Colors.purple,
-      money: 200,
+      money: 50,
       debt: 0,
     ),
     4: GameTileEntity(
       index: 4,
-      title: "Start",
-      description: "New beginning.\nClaim RM200.",
+      title: "Lunch",
+      description: "Commoners food.\nPay RM10.",
       color: Colors.lightBlue,
-      money: 200,
-      debt: 0,
+      money: 0,
+      debt: 10,
     ),
     5: GameTileEntity(
       index: 5,
-      title: "Start",
-      description: "New beginning.\nClaim RM200.",
+      title: "Bill",
+      description: "Electricity bill.\nPay RM100.",
       color: Colors.yellow,
-      money: 200,
-      debt: 0,
+      money: 0,
+      debt: 100,
     ),
     6: GameTileEntity(
       index: 6,
-      title: "Start",
-      description: "New beginning.\nClaim RM200.",
+      title: "Work",
+      description: "Working hard pays off.\nClaim RM500.",
       color: Colors.orange,
-      money: 200,
+      money: 500,
       debt: 0,
     ),
     7: GameTileEntity(
       index: 7,
-      title: "Start",
-      description: "New beginning.\nClaim RM200.",
+      title: "Money",
+      description: "You found RM50 lying on the ground.\nClaim RM50.",
       color: Colors.grey,
-      money: 200,
+      money: 50,
       debt: 0,
     ),
     12: GameTileEntity(
       index: 12,
-      title: "Start",
-      description: "New beginning.\nClaim RM200.",
+      title: "Bill",
+      description: "Water bill.\nPay RM100.",
       color: Colors.lightGreen,
-      money: 200,
-      debt: 0,
+      money: 0,
+      debt: 100,
     ),
     13: GameTileEntity(
       index: 13,
-      title: "Start",
-      description: "New beginning.\nClaim RM200.",
+      title: "Dinner",
+      description: "Commoners dinner.\nPay RM10.",
       color: Colors.yellow,
-      money: 200,
-      debt: 0,
+      money: 0,
+      debt: 10,
     ),
     18: GameTileEntity(
       index: 18,
-      title: "Start",
-      description: "New beginning.\nClaim RM200.",
+      title: "Car",
+      description: "Pay your car instalments.\nPay RM200.",
       color: Colors.white,
-      money: 200,
-      debt: 0,
+      money: 0,
+      debt: 200,
     ),
     19: GameTileEntity(
       index: 19,
-      title: "Start",
-      description: "New beginning.\nClaim RM200.",
+      title: "Work",
+      description: "Working hard pays off.\nClaim RM250.",
       color: Colors.purple,
-      money: 200,
+      money: 250,
       debt: 0,
     ),
     24: GameTileEntity(
       index: 24,
-      title: "Start",
-      description: "New beginning.\nClaim RM200.",
+      title: "Work",
+      description: "Working hard pays off.\nClaim RM400.",
       color: Colors.lightBlue,
-      money: 200,
+      money: 400,
       debt: 0,
     ),
     25: GameTileEntity(
@@ -112,19 +112,19 @@ class GameTileUseCase extends ChangeNotifier {
     ),
     30: GameTileEntity(
       index: 30,
-      title: "Start",
-      description: "New beginning.\nClaim RM200.",
+      title: "Lunch",
+      description: "VERY expensive lunch.\nPay RM100.",
       color: Colors.grey,
-      money: 200,
-      debt: 0,
+      money: 0,
+      debt: 100,
     ),
     31: GameTileEntity(
       index: 31,
-      title: "Start",
-      description: "New beginning.\nClaim RM200.",
+      title: "Dinner",
+      description: "VERY expensive dinner.\nPay RM100.",
       color: Colors.orange,
-      money: 200,
-      debt: 0,
+      money: 0,
+      debt: 100,
     ),
     32: GameTileEntity(
       index: 32,
@@ -152,19 +152,19 @@ class GameTileUseCase extends ChangeNotifier {
     ),
     35: GameTileEntity(
       index: 35,
-      title: "Start",
-      description: "New beginning.\nClaim RM200.",
+      title: "Lucky",
+      description: "You hit jackpot.\nClaim RM10000.",
       color: Colors.purple,
-      money: 200,
+      money: 10000,
       debt: 0,
     ),
     36: GameTileEntity(
       index: 36,
-      title: "Start",
-      description: "New beginning.\nClaim RM200.",
+      title: "Unlucky",
+      description: "Lost your wallet.\nLose RM11000.",
       color: Colors.orange,
-      money: 200,
-      debt: 0,
+      money: 0,
+      debt: 11000,
     ),
   };
 
@@ -193,8 +193,7 @@ class GameTileUseCase extends ChangeNotifier {
   ];
   void moveToNext() {
     // Find the next available index greater than currentIndex
-    int nextIndex =
-        currentIndex + Random(Random().nextInt(10000)).nextInt(7);
+    int nextIndex = currentIndex + Random().nextInt(7);
     if (nextIndex < gameTileMap.length) {
       currentIndex = nextIndex;
     } else {
@@ -205,5 +204,15 @@ class GameTileUseCase extends ChangeNotifier {
 
   int getTileIndex() {
     return availableIndex[currentIndex];
+  }
+
+  double getTileMoney() {
+    GameTileEntity gameTileEntity = gameTileMap[currentIndex]!;
+    return gameTileEntity.money;
+  }
+
+    double getTileDebt() {
+    GameTileEntity gameTileEntity = gameTileMap[currentIndex]!;
+    return gameTileEntity.debt;
   }
 }

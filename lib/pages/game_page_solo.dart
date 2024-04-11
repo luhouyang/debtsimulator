@@ -37,10 +37,10 @@ class _GamePageSoloState extends State<GamePageSolo> {
                 Column(
                   children: [
                     NeuContainer(
-                      color: value.gameTileMap[value.getTileIndex()]!.color,
+                      color: value.gameTileMap[value.getTileIndex()-1]!.color,
                       width: double.infinity,
                       child: Text(
-                        value.gameTileMap[value.getTileIndex()]!.title,
+                        value.gameTileMap[value.getTileIndex()-1]!.title,
                         style: const TextStyle(
                             fontWeight: FontWeight.w900, fontSize: 28),
                         textAlign: TextAlign.center,
@@ -51,7 +51,7 @@ class _GamePageSoloState extends State<GamePageSolo> {
                       color: Colors.white,
                       child: Text(
                         style: const TextStyle(fontSize: 18),
-                        value.gameTileMap[value.getTileIndex()]!.description,
+                        value.gameTileMap[value.getTileIndex()-1]!.description,
                         textAlign: TextAlign.center,
                       ),
                     )

@@ -1,4 +1,5 @@
 import 'package:debtsimulator/auth/firebase_auth_services.dart';
+import 'package:debtsimulator/components/badge_tiles.dart';
 import 'package:debtsimulator/entities/user_entity.dart';
 import 'package:debtsimulator/useCase/user_usecase.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,24 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final Map<int, String> badges = {
+    0: "assets/CREAM_badge.png",
+    1: "assets/FIRE_BASED_badge.png",
+    2: "assets/monopoly.png",
+    3: "assets/CREAM_badge.png",
+    4: "assets/CREAM_badge.png",
+    5: "assets/CREAM_badge.png",
+    6: "assets/CREAM_badge.png",
+    7: "assets/CREAM_badge.png",
+    8: "assets/CREAM_badge.png",
+    9: "assets/CREAM_badge.png",
+    10: "assets/CREAM_badge.png",
+    11: "assets/CREAM_badge.png",
+    12: "assets/CREAM_badge.png",
+    13: "assets/CREAM_badge.png",
+    14: "assets/CREAM_badge.png",
+  };
+
   @override
   Widget build(BuildContext context) {
     UserUsecase userUsecase = Provider.of<UserUsecase>(context, listen: false);
@@ -22,7 +41,7 @@ class _ProfilePageState extends State<ProfilePage> {
         physics: const NeverScrollableScrollPhysics(),
         child: Column(children: [
           const SizedBox(
-            height: 25,
+            height: 35,
           ),
           Container(
             margin: const EdgeInsets.fromLTRB(75, 0, 75, 10),
@@ -83,7 +102,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           profileIndex: 0,
                           achievements: []);
 
-                      await FirebaseAuthServices().logout(userUsecase).then((value) {
+                      await FirebaseAuthServices()
+                          .logout(userUsecase)
+                          .then((value) {
                         userUsecase.setUser(userEntity);
                       }).then((value) => Navigator.pop(context));
                     },
@@ -96,7 +117,29 @@ class _ProfilePageState extends State<ProfilePage> {
               ]),
             ]),
           ),
-          //TODO: add badges, grid view builder
+          Container(
+            margin: const EdgeInsets.only(left: 16, right: 16, top: 16),
+            height: MediaQuery.of(context).size.height * 0.55,
+            child: GridView.builder(
+              padding: EdgeInsets.only(top: 6),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  crossAxisCount: 3,
+                  childAspectRatio: 1),
+              itemCount: badges.length,
+              itemBuilder: (context, index) {
+                List<int> listInt =
+                    List<int>.from(userUsecase.userEntity.achievements);
+                debugPrint(badges[index]);
+                if (listInt.contains(index)) {
+                  return BadgeTiles(imagePath: badges[index]!);
+                } else {
+                  return const BadgeTiles(imagePath: "");
+                }
+              },
+            ),
+          ),
         ]),
       );
     }
