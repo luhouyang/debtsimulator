@@ -80,119 +80,122 @@ class _ChatButtonState extends State<ChatButton> {
     return Dialog(
       backgroundColor: Colors.transparent,
       shadowColor: Colors.transparent,
-      child: NeuContainer(
-        color: Colors.white,
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-          child: Column(
-            children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: SizedBox(
-                  child: IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: const Icon(Icons.arrow_back_ios_new_rounded)),
-                ),
-              ),
-              NeuContainer(
-                color: Colors.grey[200],
-                height: MediaQuery.of(context).size.height * 0.6,
-                child: ListView.builder(
-                  itemCount: chatLog.length,
-                  itemBuilder: (context, index) {
-                    return chatLog[index].userId ==
-                            userUsecase.userEntity.userId
-                        ? Align(
-                            alignment: Alignment.centerRight,
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(4, 4, 8, 4),
-                              child: NeuContainer(
-                                color: Colors.amber,
-                                width: MediaQuery.of(context).size.width * 0.4,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(2),
-                                  child: Text(
-                                    "${chatLog[index].username}:\n${chatLog[index].chat}",
-                                    style: const TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16),
-                                    textAlign: TextAlign.left,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          )
-                        : Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding: const EdgeInsets.all(4),
-                              child: NeuContainer(
-                                color: Colors.lightBlue,
-                                width: MediaQuery.of(context).size.width * 0.4,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(2),
-                                  child: Text(
-                                    "${chatLog[index].username}:\n${chatLog[index].chat}",
-                                    style: const TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16),
-                                    textAlign: TextAlign.left,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                  },
-                ),
-              ),
-              inputTextWidget(
-                  "chat message...", chatVerify, chatTextController),
-              Padding(
-                padding: const EdgeInsets.only(top: 16),
-                child: NeuTextButton(
-                  buttonHeight: MediaQuery.of(context).size.height * 0.07,
-                  buttonWidth: MediaQuery.of(context).size.width,
-                  enableAnimation: true,
-                  onPressed: () async {
-                    ChatEntity chatEntity = ChatEntity(
-                        userId: userUsecase.userEntity.userId,
-                        username: userUsecase.userEntity.username,
-                        chat: chatTextController.text,
-                        profileIndex: userUsecase.userEntity.profileIndex);
-
-                    gameEntity.chatLog.add(chatEntity.toMap());
-
-                    await FirebaseFirestore.instance
-                        .collection("games")
-                        .doc(widget.gameEntity.gameId)
-                        .set(gameEntity.toMap())
-                        .then((value) {
-                      chatTextController.clear();
-                      Navigator.pop(context);
-                      showDialog(
-                        context: parentContext,
-                        barrierDismissible: false,
-                        builder: (context) {
-                          return chatDialog(gameEntity, userUsecase, context);
-                        },
-                      );
-                    });
-                  },
-                  text: const Text(
-                    "Send Chat",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 28),
-                    textAlign: TextAlign.center,
+      child: SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
+        child: NeuContainer(
+          color: Colors.white,
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+            child: Column(
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: SizedBox(
+                    child: IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: const Icon(Icons.arrow_back_ios_new_rounded)),
                   ),
                 ),
-              ),
-            ],
+                NeuContainer(
+                  color: Colors.grey[200],
+                  height: MediaQuery.of(context).size.height * 0.6,
+                  child: ListView.builder(
+                    itemCount: chatLog.length,
+                    itemBuilder: (context, index) {
+                      return chatLog[index].userId ==
+                              userUsecase.userEntity.userId
+                          ? Align(
+                              alignment: Alignment.centerRight,
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(4, 4, 8, 4),
+                                child: NeuContainer(
+                                  color: Colors.amber,
+                                  width: MediaQuery.of(context).size.width * 0.4,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(2),
+                                    child: Text(
+                                      "${chatLog[index].username}:\n${chatLog[index].chat}",
+                                      style: const TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16),
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                          : Align(
+                              alignment: Alignment.centerLeft,
+                              child: Padding(
+                                padding: const EdgeInsets.all(4),
+                                child: NeuContainer(
+                                  color: Colors.lightBlue,
+                                  width: MediaQuery.of(context).size.width * 0.4,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(2),
+                                    child: Text(
+                                      "${chatLog[index].username}:\n${chatLog[index].chat}",
+                                      style: const TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16),
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                    },
+                  ),
+                ),
+                inputTextWidget(
+                    "chat message...", chatVerify, chatTextController),
+                Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: NeuTextButton(
+                    buttonHeight: MediaQuery.of(context).size.height * 0.07,
+                    buttonWidth: MediaQuery.of(context).size.width,
+                    enableAnimation: true,
+                    onPressed: () async {
+                      ChatEntity chatEntity = ChatEntity(
+                          userId: userUsecase.userEntity.userId,
+                          username: userUsecase.userEntity.username,
+                          chat: chatTextController.text,
+                          profileIndex: userUsecase.userEntity.profileIndex);
+        
+                      gameEntity.chatLog.add(chatEntity.toMap());
+        
+                      await FirebaseFirestore.instance
+                          .collection("games")
+                          .doc(widget.gameEntity.gameId)
+                          .set(gameEntity.toMap())
+                          .then((value) {
+                        chatTextController.clear();
+                        Navigator.pop(context);
+                        showDialog(
+                          context: parentContext,
+                          barrierDismissible: false,
+                          builder: (context) {
+                            return chatDialog(gameEntity, userUsecase, context);
+                          },
+                        );
+                      });
+                    },
+                    text: const Text(
+                      "Send Chat",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 28),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
