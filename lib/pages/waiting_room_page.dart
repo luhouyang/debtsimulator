@@ -195,7 +195,7 @@ class _WaitingRoomPageState extends State<WaitingRoomPage> {
                                       child: FittedBox(
                                         child: ClipOval(
                                           child: Image.asset(
-                                            "assets/profile_placeholder.jpg",
+                                            userUsecase.avatars[readyPlayerEntity.profileIndex]!,
                                           ),
                                         ),
                                       ),

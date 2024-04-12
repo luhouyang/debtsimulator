@@ -258,6 +258,7 @@ class _JoinRoomPageState extends State<JoinRoomPage> {
                                                           username: userUsecase
                                                               .userEntity
                                                               .username,
+                                                          profileIndex: userUsecase.userEntity.profileIndex,
                                                           money: 0,
                                                           debt: 0,
                                                           ready: false,

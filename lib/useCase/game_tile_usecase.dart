@@ -193,7 +193,7 @@ class GameTileUseCase extends ChangeNotifier {
   ];
   void moveToNext() {
     // Find the next available index greater than currentIndex
-    int nextIndex = currentIndex + Random().nextInt(7);
+    int nextIndex = currentIndex + Random().nextInt(6) + 1;
     if (nextIndex < gameTileMap.length) {
       currentIndex = nextIndex;
     } else {

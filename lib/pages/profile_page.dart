@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:debtsimulator/auth/firebase_auth_services.dart';
 import 'package:debtsimulator/components/badge_tiles.dart';
 import 'package:debtsimulator/entities/user_entity.dart';
@@ -32,6 +33,13 @@ class _ProfilePageState extends State<ProfilePage> {
     14: "assets/CREAM_badge.png",
   };
 
+  // final Map<int, String> avatars = {
+  //   0: "assets/profile_placeholder.jpg",
+  //   1: "assets/CREAM_badge.png",
+  //   2: "assets/FIRE_BASED_badge.png",
+  //   3: "assets/monopoly.png",
+  // };
+
   @override
   Widget build(BuildContext context) {
     UserUsecase userUsecase = Provider.of<UserUsecase>(context, listen: false);
@@ -41,7 +49,15 @@ class _ProfilePageState extends State<ProfilePage> {
         physics: const NeverScrollableScrollPhysics(),
         child: Column(children: [
           const SizedBox(
-            height: 35,
+            height: 25,
+          ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: SizedBox(
+              child: IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.arrow_back_ios_new_rounded)),
+            ),
           ),
           Container(
             margin: const EdgeInsets.fromLTRB(75, 0, 75, 10),
@@ -52,7 +68,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 ClipOval(
                   child: Image.asset(
-                    "assets/profile_placeholder.jpg",
+                    UserUsecase().avatars[userUsecase.userEntity.profileIndex]!,
                   ),
                 ),
                 Positioned(
@@ -71,7 +87,83 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: FittedBox(
                       child: FloatingActionButton(
                         backgroundColor: Colors.red,
-                        onPressed: () {},
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (context) {
+                              return Dialog(
+                                  backgroundColor: Colors.transparent,
+                                  child: NeuContainer(
+                                    color: Colors.white,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.8,
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.9,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: SizedBox(
+                                            child: IconButton(
+                                                onPressed: () =>
+                                                    Navigator.pop(context),
+                                                icon: const Icon(Icons
+                                                    .arrow_back_ios_new_rounded)),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.70,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.9,
+                                          child: GridView.builder(
+                                            padding: const EdgeInsets.all(8),
+                                            gridDelegate:
+                                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                                    crossAxisSpacing: 10,
+                                                    mainAxisSpacing: 10,
+                                                    crossAxisCount: 3,
+                                                    childAspectRatio: 1),
+                                            itemCount: UserUsecase().avatars.length,
+                                            itemBuilder: (context, index) {
+                                              return InkWell(
+                                                onHover: (value) {},
+                                                onTap: () {
+                                                  userUsecase.userEntity
+                                                      .profileIndex = index;
+                                                  FirebaseFirestore.instance
+                                                      .collection("users")
+                                                      .doc(userUsecase
+                                                          .userEntity.userId)
+                                                      .set(userUsecase
+                                                          .userEntity
+                                                          .toMap())
+                                                      .then((value) {
+                                                    Navigator.pop(context);
+                                                    setState(() {});
+                                                  });
+                                                },
+                                                child: NeuContainer(
+                                                  child: Image.asset(
+                                                      UserUsecase().avatars[index]!),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ));
+                            },
+                          );
+                        },
                         shape: const CircleBorder(),
                         child: const Icon(
                           color: Colors.black,
@@ -121,7 +213,7 @@ class _ProfilePageState extends State<ProfilePage> {
             margin: const EdgeInsets.only(left: 16, right: 16, top: 16),
             height: MediaQuery.of(context).size.height * 0.55,
             child: GridView.builder(
-              padding: EdgeInsets.only(top: 6),
+              padding: const EdgeInsets.only(top: 6),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10,
@@ -131,7 +223,6 @@ class _ProfilePageState extends State<ProfilePage> {
               itemBuilder: (context, index) {
                 List<int> listInt =
                     List<int>.from(userUsecase.userEntity.achievements);
-                debugPrint(badges[index]);
                 if (listInt.contains(index)) {
                   return BadgeTiles(imagePath: badges[index]!);
                 } else {

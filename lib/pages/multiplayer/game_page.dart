@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:debtsimulator/components/game_tiles.dart';
 import 'package:debtsimulator/components/money_card.dart';
+import 'package:debtsimulator/components/u_is_dead.dart';
 import 'package:debtsimulator/entities/game_entity.dart';
 import 'package:debtsimulator/entities/player_entity.dart';
 import 'package:debtsimulator/entities/user_entity.dart';
@@ -64,66 +65,22 @@ class _GamePageState extends State<GamePage> {
                 );
               }
               if (!snapshot.hasData || snapshot.data!.data() == null) {
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const Text(
-                      "No Data\nor\nGame Ended\nPress \"Refresh\"",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 28,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: NeuTextButton(
-                        buttonColor: Colors.blue,
-                        buttonHeight: MediaQuery.of(context).size.height * 0.1,
-                        buttonWidth: MediaQuery.of(context).size.width * 0.7,
-                        enableAnimation: true,
-                        onPressed: () async {
-                          String uid = FirebaseAuth.instance.currentUser!.uid;
-                          DocumentSnapshot doc = await FirebaseFirestore.instance
-                              .collection("users")
-                              .doc(uid)
-                              .get();
-                          userUsecase
-                              .setUser(UserEntity.fromMap(
-                                  doc.data() as Map<String, dynamic>))
-                              .then((value) {
-                            Navigator.pop(context);
-                          });
-                        },
-                        text: const Text(
-                          "Refresh",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 28),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  ],
-                );
+                return noDataGameEnd(userUsecase);
               }
               // game logic
               GameEntity gameEntity = GameEntity.fromMap(
                   snapshot.data!.data() as Map<String, dynamic>);
-      
+
               int playerIndex = 0;
               gameEntity.playerList.asMap().forEach((key, value) {
                 if (value['userId'] == userUsecase.userEntity.userId) {
                   playerIndex = key;
                 }
               });
-      
+
               PlayerEntity playerEntity =
                   PlayerEntity.fromMap(gameEntity.playerList[playerIndex]);
-      
+
               // widget
               return Scaffold(
                   backgroundColor: Colors.grey[300],
@@ -135,11 +92,6 @@ class _GamePageState extends State<GamePage> {
                         const SizedBox(
                           height: 10,
                         ),
-                        /*SizedBox(
-                    child: IconButton(
-                        onPressed: () => Navigator.pop(context),
-                        icon: const Icon(Icons.arrow_back_ios_new_rounded)),
-                  ),*/
                         Column(
                           children: [
                             NeuContainer(
@@ -289,7 +241,19 @@ class _GamePageState extends State<GamePage> {
                     elevation: 0,
                     color: Colors.transparent,
                     shape: const CircularNotchedRectangle(),
-                    child: Row(
+                    child: playerEntity.state == -1 
+                    ? const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        UIsDead(
+                            text: "no moneyyy",
+                            textColor: Colors.black),
+                        UIsDead(
+                            text: "you broke",
+                            textColor: Colors.red),
+                      ],
+                    )
+                    : Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         MoneyCard(
@@ -315,6 +279,54 @@ class _GamePageState extends State<GamePage> {
           );
         },
       ),
+    );
+  }
+
+  Widget noDataGameEnd(UserUsecase userUsecase) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const Text(
+          "No Data\nor\nGame Ended\nPress \"Refresh\"",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontSize: 28,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: NeuTextButton(
+            buttonColor: Colors.blue,
+            buttonHeight: MediaQuery.of(context).size.height * 0.1,
+            buttonWidth: MediaQuery.of(context).size.width * 0.7,
+            enableAnimation: true,
+            onPressed: () async {
+              String uid = FirebaseAuth.instance.currentUser!.uid;
+              DocumentSnapshot doc = await FirebaseFirestore.instance
+                  .collection("users")
+                  .doc(uid)
+                  .get();
+              userUsecase
+                  .setUser(
+                      UserEntity.fromMap(doc.data() as Map<String, dynamic>))
+                  .then((value) {
+                Navigator.pop(context);
+              });
+            },
+            text: const Text(
+              "Refresh",
+              style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 28),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -29,11 +29,6 @@ class _GamePageSoloState extends State<GamePageSolo> {
                 const SizedBox(
                   height: 10,
                 ),
-                /*SizedBox(
-                  child: IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: const Icon(Icons.arrow_back_ios_new_rounded)),
-                ),*/
                 Column(
                   children: [
                     NeuContainer(

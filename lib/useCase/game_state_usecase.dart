@@ -69,8 +69,7 @@ class GameStateUsecase extends ChangeNotifier {
         }
 
         if (nextPlayerIndex == -1) {
-          debugPrint("GAME ENDED"); // TODO: move ending to gamestate
-          /* this code already works*/
+          // ends game
           await FirebaseFirestore.instance
               .collection("games")
               .doc(gameEntity.gameId)

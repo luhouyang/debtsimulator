@@ -42,13 +42,41 @@ class _GoButtonState extends State<GoButton> {
     super.dispose();
   }
 
+  // game loop
   Future<void> setNextPlayer(
       PlayerEntity playerEntity, GameEntity gameEntity) async {
+    GameTileUseCase gameTileUseCase =
+        Provider.of<GameTileUseCase>(context, listen: false);
+    GameStateUsecase gameStateUsecase =
+        Provider.of<GameStateUsecase>(context, listen: false);
+
+    gameTileUseCase.moveToNext(); // update tile
+
+    PlayerEntity playerEntity =
+        PlayerEntity.fromMap(widget.gameEntity.playerList[widget.playerIndex]);
+
+    gameStateUsecase.updateMoneyDebt(
+        playerEntity,
+        widget.gameEntity,
+        widget.playerIndex,
+        gameTileUseCase.getTileMoney(),
+        gameTileUseCase.getTileDebt(),
+        gameTileUseCase.getTileIndex()); // update money/debt
+
+    if (gameTileUseCase.getTileIndex() == 1) {
+      if (playerEntity.money < playerEntity.debt) {
+        playerEntity.state = -1;
+        widget.gameEntity.playerList[widget.playerIndex] = playerEntity.toMap();
+      }
+    } // check if money is enough to pay debt
+
     if (playerEntity.state == 1) {
+      // update own player data
       playerEntity.state = 0;
       gameEntity.playerList[widget.playerIndex] = playerEntity.toMap();
       gameEntity.currentMove++;
 
+      // search for next player in queue
       int nextPlayerIndex = -1;
       gameEntity.playerList.asMap().forEach((key, value) {
         if (key > widget.playerIndex) {
@@ -70,8 +98,7 @@ class _GoButtonState extends State<GoButton> {
       }
 
       if (nextPlayerIndex == -1) {
-        //debugPrint("GAME ENDED"); // TODO: move ending to gamestate
-        /* this code already works*/
+        // ends game in all player state = -1
         GameStateUsecase gameStateUsecase =
             Provider.of<GameStateUsecase>(context, listen: false);
         await FirebaseFirestore.instance
@@ -141,28 +168,6 @@ class _GoButtonState extends State<GoButton> {
                 if (widget.gameEntity.currentMove ==
                         gameStateUsecase.currentMove &&
                     playerEntity.state == 1) {
-                  gameTileUseCase.moveToNext();
-                  debugPrint("Changed to ${gameTileUseCase.currentIndex}");
-
-                  PlayerEntity playerEntity = PlayerEntity.fromMap(
-                      widget.gameEntity.playerList[widget.playerIndex]);
-
-                  gameStateUsecase.updateMoneyDebt(
-                      playerEntity,
-                      widget.gameEntity,
-                      widget.playerIndex,
-                      gameTileUseCase.getTileMoney(),
-                      gameTileUseCase.getTileDebt(),
-                      gameTileUseCase.getTileIndex());
-
-                  if (gameTileUseCase.getTileIndex() == 1) {
-                    if (playerEntity.money < playerEntity.debt) {
-                      playerEntity.state = -1;
-                      widget.gameEntity.playerList[widget.playerIndex] =
-                          playerEntity.toMap();
-                    }
-                  }
-
                   await setNextPlayer(playerEntity, widget.gameEntity);
                 }
               },

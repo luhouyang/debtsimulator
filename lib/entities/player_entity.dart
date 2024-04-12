@@ -1,6 +1,7 @@
 class PlayerEntity {
   final String userId;
   final String username;
+  final int profileIndex;
   double money;
   double debt;
   bool ready; // 0 (not ready), 1 (ready)
@@ -13,6 +14,7 @@ class PlayerEntity {
   PlayerEntity({
     required this.userId,
     required this.username,
+    required this.profileIndex,
     required this.money,
     required this.debt,
     required this.ready,
@@ -27,6 +29,7 @@ class PlayerEntity {
     return PlayerEntity(
       userId: map['userId'] as String,
       username: map['username'] as String,
+      profileIndex: map['profileIndex'] as int,
       money: double.tryParse(map['money'].toString())!,
       debt: double.tryParse(map['debt'].toString())!,
       ready: map['ready'] as bool,
@@ -42,6 +45,7 @@ class PlayerEntity {
     return {
       'userId': userId,
       'username': username,
+      'profileIndex': profileIndex,
       'money': money,
       'debt': debt,
       'ready': ready,

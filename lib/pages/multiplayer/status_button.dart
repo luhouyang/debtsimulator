@@ -1,7 +1,9 @@
 import 'package:debtsimulator/entities/game_entity.dart';
 import 'package:debtsimulator/entities/player_entity.dart';
+import 'package:debtsimulator/useCase/user_usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:neubrutalism_ui/neubrutalism_ui.dart';
+import 'package:provider/provider.dart';
 
 class StatusButton extends StatefulWidget {
   final GameEntity gameEntity;
@@ -38,57 +40,68 @@ class _StatusButtonState extends State<StatusButton> {
   Widget playerStatusCard(PlayerEntity playerEntity) {
     double difference = playerEntity.money - playerEntity.debt;
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-      child: NeuContainer(
-        height: 100,
-        color: difference < -100 ? Colors.red
-        : difference < 0 ? Colors.amber
-        : difference < 100 ? Colors.grey
-        : Colors.green,
-        child: Row(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                  boxShadow: const [
-                    BoxShadow(color: Colors.black, offset: Offset(0, 5))
-                  ],
-                  border: Border.all(width: 3),
-                  borderRadius: BorderRadius.circular(50)),
-              margin: const EdgeInsets.all(5),
-              height: 55,
-              width: 55,
-              child: FittedBox(
-                child: ClipOval(
-                  child: Image.asset(
-                    "assets/profile_placeholder.jpg",
+    return Consumer<UserUsecase>(
+      builder: (context, userUseCase, child) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+          child: NeuContainer(
+            height: 100,
+            color: difference < -100
+                ? Colors.red
+                : difference < 0
+                    ? Colors.amber
+                    : difference < 100
+                        ? Colors.grey
+                        : Colors.green,
+            child: Row(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                      boxShadow: const [
+                        BoxShadow(color: Colors.black, offset: Offset(0, 5))
+                      ],
+                      border: Border.all(width: 3),
+                      borderRadius: BorderRadius.circular(50)),
+                  margin: const EdgeInsets.all(5),
+                  height: 55,
+                  width: 55,
+                  child: FittedBox(
+                    child: ClipOval(
+                      child: Image.asset(
+                        UserUsecase().avatars[playerEntity.profileIndex]!,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  playerEntity.username,
-                  style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  "Money: ${playerEntity.money}",
-                  style: const TextStyle(color: Colors.black, fontSize: 12),
-                ),
-                Text(
-                  "Debt: ${playerEntity.debt}",
-                  style: const TextStyle(color: Colors.black, fontSize: 12),
-                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      playerEntity.username,
+                      style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      playerEntity.state == -1
+                          ? "no money"
+                          : "Money: ${playerEntity.money}",
+                      style: const TextStyle(color: Colors.black, fontSize: 12),
+                    ),
+                    Text(
+                      playerEntity.state == -1
+                          ? "you broke"
+                          : "Debt: ${playerEntity.debt}",
+                      style: const TextStyle(color: Colors.black, fontSize: 12),
+                    ),
+                  ],
+                )
               ],
-            )
-          ],
-        ),
-      ),
+            ),
+          ),
+        );
+      },
     );
   }
 
