@@ -26,12 +26,12 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  var inEmailTextController = TextEditingController();
-  var inPassTextController = TextEditingController();
+  TextEditingController inEmailTextController = TextEditingController();
+  TextEditingController inPassTextController = TextEditingController();
 
-  var upEmailTextController = TextEditingController();
-  var upPassTextController = TextEditingController();
-  var userNameTextController = TextEditingController();
+  TextEditingController upEmailTextController = TextEditingController();
+  TextEditingController upPassTextController = TextEditingController();
+  TextEditingController userNameTextController = TextEditingController();
 
   // GoogleSignInAccount? _currentUser;
   // bool _isAuthorized = false; // has granted permissions?
@@ -113,8 +113,8 @@ class _LoginPageState extends State<LoginPage> {
                                       authUseCase.changeLoadingBool(true);
                                       await FirebaseAuthServices().signIn(
                                           context,
-                                          inEmailTextController.text,
-                                          inPassTextController.text,
+                                          inEmailTextController.text.trim(),
+                                          inPassTextController.text.trim(),
                                           userUsecase);
 
                                       authUseCase.changeLoadingBool(false);
@@ -154,7 +154,7 @@ class _LoginPageState extends State<LoginPage> {
                         inputTextWidget(
                             "password", passwordVerify, upPassTextController),
                         inputTextWidget(
-                            "username", passwordVerify, userNameTextController),
+                            "username", usernameVerify, userNameTextController),
                         Row(
                           mainAxisSize: MainAxisSize.max,
                           children: [
@@ -168,8 +168,8 @@ class _LoginPageState extends State<LoginPage> {
                                       authUseCase.changeLoadingBool(true);
                                       await FirebaseAuthServices().signUp(
                                           context,
-                                          upEmailTextController.text,
-                                          upPassTextController.text,
+                                          upEmailTextController.text.trim(),
+                                          upPassTextController.text.trim(),
                                           userNameTextController.text,
                                           userUsecase);
 
@@ -296,6 +296,10 @@ class _LoginPageState extends State<LoginPage> {
 
   String passwordVerify(value) {
     return value != null ? "" : "Please enter a valid password";
+  }
+
+  String usernameVerify(value) {
+    return value != null ? "" : "Please enter a valid username";
   }
 
   Widget inputTextWidget(

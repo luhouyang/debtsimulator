@@ -20,6 +20,7 @@ dependencies:
   email_validator: ^2.1.17
   google_sign_in: ^6.2.1
   neubrutalism_ui: ^2.0.2
+  percent_indicator: ^4.2.3
 
 dev_dependencies:
   flutter_test:
@@ -34,6 +35,10 @@ flutter:
   assets:
   - assets/monopoly.png
   - assets/profile_placeholder.jpg
+  - assets/CREAM_badge.png
+  - assets/FIRE_BASED_badge.png
+  - assets/FIRE_BASED_GOLDEN.png
+  - assets/almondmilfinverted.jpg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -30,14 +30,14 @@ class MoneyCard extends StatelessWidget {
               child: Text(
                 text,
                 style: const TextStyle(
-                    fontSize: 20,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: Colors.white),
                 textAlign: TextAlign.center,
               ),
             ),
             const SizedBox(
-              width: 10,
+              width: 5,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -45,7 +45,7 @@ class MoneyCard extends StatelessWidget {
                 amount,
                 style: TextStyle(
                     color: textColor,
-                    fontSize: 18,
+                    fontSize: 14,
                     fontWeight: FontWeight.w500),
               ),
             )

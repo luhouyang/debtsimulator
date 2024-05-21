@@ -24,7 +24,7 @@ class AuthStream extends StatelessWidget {
                 ),
               );
             } else if (snapshot.hasData /* && !value.isGoogleOAuthLoading*/) {
-              return const GAMEMODE();
+              return const SafeArea(child: GAMEMODE(),);
             } else if (value.isLoading) {
               return Scaffold(
                 body: Center(

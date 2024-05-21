@@ -6,7 +6,7 @@ class GameTile extends StatelessWidget {
   final int index;
   GameTile({super.key, required this.index});
 
-  Map<int, Color> colorMap = {
+  final Map<int, Color> colorMap = {
     1: Colors.red,
     2: Colors.white,
     3: Colors.purple,

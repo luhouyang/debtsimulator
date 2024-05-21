@@ -1,5 +1,6 @@
 import 'package:debtsimulator/auth/auth_stream.dart';
 import 'package:debtsimulator/auth/auth_usecase.dart';
+import 'package:debtsimulator/useCase/game_state_usecase.dart';
 import 'package:debtsimulator/useCase/game_tile_usecase.dart';
 import 'package:debtsimulator/useCase/user_usecase.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -30,7 +31,10 @@ class MyApp extends StatelessWidget {
           ),
           ChangeNotifierProvider(
             create: (context) => GameTileUseCase(),
-          )
+          ),
+          ChangeNotifierProvider(
+            create: (context) => GameStateUsecase(),
+          ),
         ],
         child: MaterialApp(
           title: 'Flutter Demo',
