@@ -97,13 +97,13 @@ class _GamePageState extends State<GamePage> {
                             NeuContainer(
                               color: gameTileUseCase
                                   .gameTileMap[
-                                      gameTileUseCase.getTileIndex() - 1]!
+                                      gameTileUseCase.getTileIndex()]!
                                   .color,
                               width: double.infinity,
                               child: Text(
                                 gameTileUseCase
                                     .gameTileMap[
-                                        gameTileUseCase.getTileIndex() - 1]!
+                                        gameTileUseCase.getTileIndex()]!
                                     .title,
                                 style: const TextStyle(
                                     fontWeight: FontWeight.w900, fontSize: 28),
@@ -117,7 +117,7 @@ class _GamePageState extends State<GamePage> {
                                 style: const TextStyle(fontSize: 18),
                                 gameTileUseCase
                                     .gameTileMap[
-                                        gameTileUseCase.getTileIndex() - 1]!
+                                        gameTileUseCase.getTileIndex()]!
                                     .description,
                                 textAlign: TextAlign.center,
                               ),

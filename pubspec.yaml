@@ -37,6 +37,8 @@ flutter:
   - assets/profile_placeholder.jpg
   - assets/CREAM_badge.png
   - assets/FIRE_BASED_badge.png
+  - assets/FIRE_BASED_GOLDEN.png
+  - assets/almondmilfinverted.jpg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

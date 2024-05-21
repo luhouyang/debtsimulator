@@ -168,7 +168,7 @@ class GameTileUseCase extends ChangeNotifier {
     ),
   };
 
-  int currentIndex = 1;
+  int currentIndex = 0;
   List<int> availableIndex = [
     1,
     2,
@@ -197,7 +197,7 @@ class GameTileUseCase extends ChangeNotifier {
     if (nextIndex < gameTileMap.length) {
       currentIndex = nextIndex;
     } else {
-      currentIndex = 1;
+      currentIndex = 0;
     }
     notifyListeners();
   }
@@ -207,12 +207,12 @@ class GameTileUseCase extends ChangeNotifier {
   }
 
   double getTileMoney() {
-    GameTileEntity gameTileEntity = gameTileMap[currentIndex]!;
+    GameTileEntity gameTileEntity = gameTileMap[getTileIndex()]!;
     return gameTileEntity.money;
   }
 
     double getTileDebt() {
-    GameTileEntity gameTileEntity = gameTileMap[currentIndex]!;
+    GameTileEntity gameTileEntity = gameTileMap[getTileIndex()]!;
     return gameTileEntity.debt;
   }
 }

@@ -113,8 +113,8 @@ class _LoginPageState extends State<LoginPage> {
                                       authUseCase.changeLoadingBool(true);
                                       await FirebaseAuthServices().signIn(
                                           context,
-                                          inEmailTextController.text,
-                                          inPassTextController.text,
+                                          inEmailTextController.text.trim(),
+                                          inPassTextController.text.trim(),
                                           userUsecase);
 
                                       authUseCase.changeLoadingBool(false);
@@ -168,8 +168,8 @@ class _LoginPageState extends State<LoginPage> {
                                       authUseCase.changeLoadingBool(true);
                                       await FirebaseAuthServices().signUp(
                                           context,
-                                          upEmailTextController.text,
-                                          upPassTextController.text,
+                                          upEmailTextController.text.trim(),
+                                          upPassTextController.text.trim(),
                                           userNameTextController.text,
                                           userUsecase);
 

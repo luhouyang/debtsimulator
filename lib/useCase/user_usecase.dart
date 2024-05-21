@@ -8,6 +8,8 @@ class UserUsecase extends ChangeNotifier {
     1: "assets/CREAM_badge.png",
     2: "assets/FIRE_BASED_badge.png",
     3: "assets/monopoly.png",
+    4: "assets/FIRE_BASED_GOLDEN.png",
+    5: "assets/almondmilfinverted.jpg"
   };
   
   UserEntity userEntity = UserEntity(

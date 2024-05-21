@@ -135,10 +135,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                             itemBuilder: (context, index) {
                                               return InkWell(
                                                 onHover: (value) {},
-                                                onTap: () {
+                                                onTap: () async {
                                                   userUsecase.userEntity
                                                       .profileIndex = index;
-                                                  FirebaseFirestore.instance
+                                                  await FirebaseFirestore.instance
                                                       .collection("users")
                                                       .doc(userUsecase
                                                           .userEntity.userId)
