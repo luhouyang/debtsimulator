@@ -142,7 +142,7 @@ class _GoButtonState extends State<GoButton> {
 
         WidgetsBinding.instance.addPostFrameCallback(
           (timeStamp) {
-            gameStateUsecase.updateCoundtdown(
+            gameStateUsecase.updateCoundtdownGoAFK(
                 playerEntity, widget.gameEntity, widget.playerIndex);
           },
         );

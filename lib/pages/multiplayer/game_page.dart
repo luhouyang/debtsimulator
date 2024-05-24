@@ -28,19 +28,19 @@ class GamePage extends StatefulWidget {
 }
 
 class _GamePageState extends State<GamePage> {
-  late DocumentReference query;
-  StreamController streamController = StreamController();
+  //late DocumentReference query;
+  //StreamController streamController = StreamController();
 
   @override
   void initState() {
-    query = FirebaseFirestore.instance.collection("games").doc(widget.gameId);
-    streamController.addStream(query.snapshots());
+    //query = FirebaseFirestore.instance.collection("games").doc(widget.gameId);
+    //streamController.addStream(query.snapshots());
     super.initState();
   }
 
   @override
   void dispose() {
-    streamController.close();
+    //streamController.close();
     super.dispose();
   }
 
@@ -52,7 +52,7 @@ class _GamePageState extends State<GamePage> {
       body: Consumer<GameTileUseCase>(
         builder: (context, gameTileUseCase, child) {
           return StreamBuilder(
-            stream: streamController.stream,
+            stream: FirebaseFirestore.instance.collection("games").doc(widget.gameId).snapshots(),//streamController.stream,
             initialData: widget.doc,
             builder: (context, snapshot) {
               // error handling

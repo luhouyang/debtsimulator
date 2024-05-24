@@ -28,7 +28,7 @@ class GameStateUsecase extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateCoundtdown(
+  Future<void> updateCoundtdownGoAFK(
       PlayerEntity playerEntity, GameEntity gameEntity, int playerIndex) async {
     if (gameEntity.currentMove != currentMove || resetTimer) {
       if (playerEntity.state == 1) {
