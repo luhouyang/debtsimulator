@@ -307,6 +307,42 @@ class _JoinRoomPageState extends State<JoinRoomPage> {
                                                                   doc: value,
                                                                 )));
                                                   });
+                                                } else {
+                                                  FirebaseFirestore
+                                                      firebaseFirestore =
+                                                      FirebaseFirestore
+                                                          .instance;
+
+                                                  userUsecase.userEntity
+                                                            .ongoingGame =
+                                                        gameEntity.gameId;
+
+                                                  await firebaseFirestore
+                                                        .collection("users")
+                                                        .doc(userUsecase
+                                                            .userEntity.userId)
+                                                        .set(userUsecase
+                                                            .userEntity
+                                                            .toMap());
+                                                  
+                                                  await FirebaseFirestore
+                                                      .instance
+                                                      .collection("games")
+                                                      .doc(gameEntity.gameId)
+                                                      .get()
+                                                      .then((value) {
+                                                    Navigator.pop(context);
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                WaitingRoomPage(
+                                                                  gameId: userUsecase
+                                                                      .userEntity
+                                                                      .ongoingGame,
+                                                                  doc: value,
+                                                                )));
+                                                  });
                                                 }
                                               },
                                               text: const Text(

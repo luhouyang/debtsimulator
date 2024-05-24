@@ -1,4 +1,5 @@
 import 'package:debtsimulator/useCase/game_state_usecase.dart';
+import 'package:debtsimulator/useCase/game_tile_usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
@@ -15,8 +16,8 @@ class CircularPercentage extends StatefulWidget {
 class _CircularPercentageState extends State<CircularPercentage> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<GameStateUsecase>(
-      builder: (context, gameStateUsecase, child) {
+    return Consumer2<GameStateUsecase, GameTileUseCase>(
+      builder: (context, gameStateUsecase, gameTileUseCase, child) {
         return CircularPercentIndicator(
           radius: 28,
           circularStrokeCap: CircularStrokeCap.round,

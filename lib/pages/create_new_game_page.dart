@@ -15,6 +15,8 @@ class CreateNewGamePage extends StatefulWidget {
 }
 
 class _CreateNewGamePageState extends State<CreateNewGamePage> {
+  bool isCreating = false;
+
   TextEditingController roomNameTextController = TextEditingController();
 
   @override
@@ -27,7 +29,9 @@ class _CreateNewGamePageState extends State<CreateNewGamePage> {
         padding: const EdgeInsets.fromLTRB(16, 30, 16, 0),
         child: Column(
           children: [
-            const SizedBox(height: 100,),
+            const SizedBox(
+              height: 100,
+            ),
             inputTextWidget(
                 "Room Name", roomNameVerify, roomNameTextController),
             NeuTextButton(
@@ -36,60 +40,67 @@ class _CreateNewGamePageState extends State<CreateNewGamePage> {
               enableAnimation: true,
               buttonColor: Colors.red,
               onPressed: () async {
-                FirebaseFirestore firebaseFirestore =
-                    FirebaseFirestore.instance;
+                if (roomNameTextController.text != "" &&
+                    roomNameTextController.text.isNotEmpty &&
+                    !isCreating) {
+                  isCreating = true;
+                  FirebaseFirestore firebaseFirestore =
+                      FirebaseFirestore.instance;
 
-                String newId = firebaseFirestore.collection("games").doc().id;
+                  String newId = firebaseFirestore.collection("games").doc().id;
 
-                PlayerEntity playerEntity = PlayerEntity(
-                    userId: userUsecase.userEntity.userId,
-                    username: userUsecase.userEntity.username,
-                    profileIndex: userUsecase.userEntity.profileIndex,
-                    money: 0,
-                    debt: 0,
-                    ready: false,
-                    state: 1,
-                    afkCounter: 0,
-                    boardIndex: 0,
-                    assets: [],
-                    moveHistory: []);
-                List<Map<String, dynamic>> playerList = [playerEntity.toMap()];
-                debugPrint(playerList.toString());
+                  PlayerEntity playerEntity = PlayerEntity(
+                      userId: userUsecase.userEntity.userId,
+                      username: userUsecase.userEntity.username,
+                      profileIndex: userUsecase.userEntity.profileIndex,
+                      money: 0,
+                      debt: 0,
+                      ready: false,
+                      state: 1,
+                      afkCounter: 0,
+                      boardIndex: 0,
+                      assets: [],
+                      moveHistory: []);
+                  List<Map<String, dynamic>> playerList = [
+                    playerEntity.toMap()
+                  ];
+                  debugPrint(playerList.toString());
 
-                await firebaseFirestore
-                    .collection("games")
-                    .doc(newId)
-                    .set(GameEntity(
-                            roomName: roomNameTextController.text,
-                            gameId: newId,
-                            currentMove: 0,
-                            gameStatus: false,
-                            numPlayer: 1,
-                            chatLog: [],
-                            playerList: playerList)
-                        .toMap())
-                    .then((value) {
-                  userUsecase.userEntity.ongoingGame = newId;
-                  firebaseFirestore
-                      .collection("users")
-                      .doc(userUsecase.userEntity.userId)
-                      .set(userUsecase.userEntity.toMap());
-                });
+                  await firebaseFirestore
+                      .collection("games")
+                      .doc(newId)
+                      .set(GameEntity(
+                              roomName: roomNameTextController.text,
+                              gameId: newId,
+                              currentMove: 0,
+                              gameStatus: false,
+                              numPlayer: 1,
+                              chatLog: [],
+                              playerList: playerList)
+                          .toMap())
+                      .then((value) {
+                    userUsecase.userEntity.ongoingGame = newId;
+                    firebaseFirestore
+                        .collection("users")
+                        .doc(userUsecase.userEntity.userId)
+                        .set(userUsecase.userEntity.toMap());
+                  });
 
-                await FirebaseFirestore.instance
-                                .collection("games")
-                                .doc(newId)
-                                .get().then((value) {
-                                  Navigator.pop(context);
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => WaitingRoomPage(
-                                          gameId: userUsecase
-                                              .userEntity.ongoingGame,
-                                              doc: value,
-                                        )));
-                                });
+                  await FirebaseFirestore.instance
+                      .collection("games")
+                      .doc(newId)
+                      .get()
+                      .then((value) {
+                    Navigator.pop(context);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => WaitingRoomPage(
+                                  gameId: userUsecase.userEntity.ongoingGame,
+                                  doc: value,
+                                )));
+                  });
+                }
               },
               text: const Text(
                 "New Game",

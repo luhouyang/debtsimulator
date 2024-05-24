@@ -20,10 +20,14 @@ class GoButton extends StatefulWidget {
 }
 
 class _GoButtonState extends State<GoButton> {
-  Timer timer = Timer(const Duration(milliseconds: 1), () {});
+  Timer timer = Timer(const Duration(milliseconds: 100), () {});
 
   void checkMoveCounter(GameStateUsecase gameStateUsecase) {
-    timer = Timer.periodic(const Duration(milliseconds: 50), (timer) async {
+    timer = Timer.periodic(const Duration(milliseconds: 100), (timer) async {
+      if (gameStateUsecase.currentMove != widget.gameEntity.currentMove) {
+        gameStateUsecase.setCurrentMove(widget.gameEntity.currentMove);
+        gameStateUsecase.setResetTimer();
+      }
       gameStateUsecase.updateCountdown();
     });
   }
@@ -50,7 +54,7 @@ class _GoButtonState extends State<GoButton> {
     GameStateUsecase gameStateUsecase =
         Provider.of<GameStateUsecase>(context, listen: false);
 
-    gameTileUseCase.moveToNext(); // update tile
+    bool eval = gameTileUseCase.moveToNext(); // update tile
 
     PlayerEntity playerEntity =
         PlayerEntity.fromMap(widget.gameEntity.playerList[widget.playerIndex]);
@@ -63,18 +67,21 @@ class _GoButtonState extends State<GoButton> {
         gameTileUseCase.getTileDebt(),
         gameTileUseCase.getTileIndex()); // update money/debt
 
-    if (gameTileUseCase.getTileIndex() == 1) {
-      if (playerEntity.money < playerEntity.debt) {
-        playerEntity.state = -1;
-        widget.gameEntity.playerList[widget.playerIndex] = playerEntity.toMap();
-      }
-    } // check if money is enough to pay debt
-
     if (playerEntity.state == 1) {
       // update own player data
-      playerEntity.state = 0;
+
+      if (eval) {
+        if (playerEntity.money < playerEntity.debt) {
+          // check if money is enough to pay debt
+          playerEntity.state = -1;
+        } else {
+          playerEntity.state = 0;
+        }
+      } else {
+        playerEntity.state = 0;
+      }
+
       gameEntity.playerList[widget.playerIndex] = playerEntity.toMap();
-      gameEntity.currentMove++;
 
       // search for next player in queue
       int nextPlayerIndex = -1;
@@ -116,6 +123,8 @@ class _GoButtonState extends State<GoButton> {
           gameStateUsecase.setGameEnded();
         });
       } else {
+        gameEntity.currentMove = gameEntity.currentMove + 1;
+
         PlayerEntity nextPlayerEntity =
             PlayerEntity.fromMap(gameEntity.playerList[nextPlayerIndex]);
 
@@ -125,7 +134,10 @@ class _GoButtonState extends State<GoButton> {
             .collection("games")
             .doc(gameEntity.gameId)
             .set(gameEntity.toMap())
-            .then((value) {});
+            .then((value) {
+          gameStateUsecase.setCurrentMove(gameEntity.currentMove);
+          gameStateUsecase.setResetTimer();
+        });
       }
     }
   }
@@ -159,15 +171,10 @@ class _GoButtonState extends State<GoButton> {
           width: 80,
           child: FittedBox(
             child: FloatingActionButton(
-              backgroundColor: (widget.gameEntity.currentMove ==
-                          gameStateUsecase.currentMove &&
-                      playerEntity.state == 1)
-                  ? Colors.red
-                  : Colors.blue,
+              backgroundColor:
+                  (playerEntity.state == 1) ? Colors.red : Colors.blue,
               onPressed: () async {
-                if (widget.gameEntity.currentMove ==
-                        gameStateUsecase.currentMove &&
-                    playerEntity.state == 1) {
+                if (playerEntity.state == 1) {
                   await setNextPlayer(playerEntity, widget.gameEntity);
                 }
               },

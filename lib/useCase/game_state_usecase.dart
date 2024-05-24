@@ -15,13 +15,18 @@ class GameStateUsecase extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setResetTimer() {
+    moveCountdown = 30000;
+    notifyListeners();
+  }
+
   void setCurrentMove(int move) {
     currentMove = move;
     notifyListeners();
   }
 
   void updateCountdown() {
-    moveCountdown -= 50;
+    moveCountdown -= 100;
     if (moveCountdown < 0 && !resetTimer) {
       resetTimer = true;
     }
@@ -30,16 +35,14 @@ class GameStateUsecase extends ChangeNotifier {
 
   Future<void> updateCoundtdownGoAFK(
       PlayerEntity playerEntity, GameEntity gameEntity, int playerIndex) async {
-    if (gameEntity.currentMove != currentMove || resetTimer) {
+    if (resetTimer) {
       if (playerEntity.state == 1) {
         if (resetTimer) {
           playerEntity.afkCounter++;
         }
-        gameEntity
-            .currentMove++; // allow countdown to be resetted once without change in database
+        gameEntity.currentMove = gameEntity.currentMove +
+            1; // allow countdown to be resetted once without change in database
         resetTimer = false;
-        moveCountdown = 30000;
-        currentMove = gameEntity.currentMove;
 
         playerEntity.state = 0;
         if (playerEntity.afkCounter >= 3) {

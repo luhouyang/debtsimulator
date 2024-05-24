@@ -9,6 +9,7 @@ import 'package:debtsimulator/entities/user_entity.dart';
 import 'package:debtsimulator/pages/multiplayer/chat_button.dart';
 import 'package:debtsimulator/pages/multiplayer/go_button.dart';
 import 'package:debtsimulator/pages/multiplayer/status_button.dart';
+import 'package:debtsimulator/useCase/game_state_usecase.dart';
 import 'package:debtsimulator/useCase/game_tile_usecase.dart';
 import 'package:debtsimulator/useCase/user_usecase.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -28,19 +29,19 @@ class GamePage extends StatefulWidget {
 }
 
 class _GamePageState extends State<GamePage> {
-  //late DocumentReference query;
-  //StreamController streamController = StreamController();
+  late DocumentReference query;
+  StreamController streamController = StreamController();
 
   @override
   void initState() {
-    //query = FirebaseFirestore.instance.collection("games").doc(widget.gameId);
-    //streamController.addStream(query.snapshots());
+    query = FirebaseFirestore.instance.collection("games").doc(widget.gameId);
+    streamController.addStream(query.snapshots());
     super.initState();
   }
 
   @override
   void dispose() {
-    //streamController.close();
+    streamController.close();
     super.dispose();
   }
 
@@ -52,7 +53,7 @@ class _GamePageState extends State<GamePage> {
       body: Consumer<GameTileUseCase>(
         builder: (context, gameTileUseCase, child) {
           return StreamBuilder(
-            stream: FirebaseFirestore.instance.collection("games").doc(widget.gameId).snapshots(),//streamController.stream,
+            stream: streamController.stream,
             initialData: widget.doc,
             builder: (context, snapshot) {
               // error handling
@@ -96,8 +97,7 @@ class _GamePageState extends State<GamePage> {
                           children: [
                             NeuContainer(
                               color: gameTileUseCase
-                                  .gameTileMap[
-                                      gameTileUseCase.getTileIndex()]!
+                                  .gameTileMap[gameTileUseCase.getTileIndex()]!
                                   .color,
                               width: double.infinity,
                               child: Text(
@@ -241,33 +241,30 @@ class _GamePageState extends State<GamePage> {
                     elevation: 0,
                     color: Colors.transparent,
                     shape: const CircularNotchedRectangle(),
-                    child: playerEntity.state == -1 
-                    ? const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        UIsDead(
-                            text: "no moneyyy",
-                            textColor: Colors.black),
-                        UIsDead(
-                            text: "you broke",
-                            textColor: Colors.red),
-                      ],
-                    )
-                    : Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        MoneyCard(
-                            text: "\$",
-                            amount: playerEntity.money.toString(),
-                            iconColor: Colors.orange,
-                            textColor: Colors.black),
-                        MoneyCard(
-                            text: "!-",
-                            amount: playerEntity.debt.toString(),
-                            iconColor: Colors.red,
-                            textColor: Colors.red),
-                      ],
-                    ),
+                    child: playerEntity.state == -1
+                        ? const Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              UIsDead(
+                                  text: "no moneyyy", textColor: Colors.black),
+                              UIsDead(text: "you broke", textColor: Colors.red),
+                            ],
+                          )
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              MoneyCard(
+                                  text: "\$",
+                                  amount: playerEntity.money.toString(),
+                                  iconColor: Colors.orange,
+                                  textColor: Colors.black),
+                              MoneyCard(
+                                  text: "!-",
+                                  amount: playerEntity.debt.toString(),
+                                  iconColor: Colors.red,
+                                  textColor: Colors.red),
+                            ],
+                          ),
                   ),
                   floatingActionButtonLocation:
                       FloatingActionButtonLocation.centerDocked,

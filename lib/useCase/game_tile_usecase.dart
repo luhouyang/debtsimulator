@@ -40,17 +40,17 @@ class GameTileUseCase extends ChangeNotifier {
     5: GameTileEntity(
       index: 5,
       title: "Bill",
-      description: "Electricity bill.\nPay RM100.",
+      description: "Electricity bill.\nPay RM110.",
       color: Colors.yellow,
       money: 0,
-      debt: 100,
+      debt: 110,
     ),
     6: GameTileEntity(
       index: 6,
       title: "Work",
-      description: "Working hard pays off.\nClaim RM500.",
+      description: "Working hard pays off.\nClaim RM400.",
       color: Colors.orange,
-      money: 500,
+      money: 400,
       debt: 0,
     ),
     7: GameTileEntity(
@@ -64,10 +64,10 @@ class GameTileUseCase extends ChangeNotifier {
     12: GameTileEntity(
       index: 12,
       title: "Bill",
-      description: "Water bill.\nPay RM100.",
+      description: "Water bill.\nPay RM110.",
       color: Colors.lightGreen,
       money: 0,
-      debt: 100,
+      debt: 110,
     ),
     13: GameTileEntity(
       index: 13,
@@ -80,10 +80,10 @@ class GameTileUseCase extends ChangeNotifier {
     18: GameTileEntity(
       index: 18,
       title: "Car",
-      description: "Pay your car instalments.\nPay RM200.",
+      description: "Pay your car instalments.\nPay RM400.",
       color: Colors.white,
       money: 0,
-      debt: 200,
+      debt: 400,
     ),
     19: GameTileEntity(
       index: 19,
@@ -113,39 +113,39 @@ class GameTileUseCase extends ChangeNotifier {
     30: GameTileEntity(
       index: 30,
       title: "Lunch",
-      description: "VERY expensive lunch.\nPay RM100.",
+      description: "VERY expensive lunch.\nPay RM150.",
       color: Colors.grey,
       money: 0,
-      debt: 100,
+      debt: 150,
     ),
     31: GameTileEntity(
       index: 31,
       title: "Dinner",
-      description: "VERY expensive dinner.\nPay RM100.",
+      description: "VERY expensive dinner.\nPay RM250.",
       color: Colors.orange,
       money: 0,
-      debt: 100,
+      debt: 250,
     ),
     32: GameTileEntity(
       index: 32,
-      title: "Start",
-      description: "New beginning.\nClaim RM200.",
+      title: "Accident",
+      description: "You fall and break a leg.\nPay RM500.",
       color: Colors.white,
-      money: 200,
-      debt: 0,
+      money: 0,
+      debt: 500,
     ),
     33: GameTileEntity(
       index: 33,
-      title: "Start",
-      description: "New beginning.\nClaim RM200.",
+      title: "Robbed",
+      description: "You got robbed.\nLose RM300.",
       color: Colors.lightGreen,
-      money: 200,
-      debt: 0,
+      money: 0,
+      debt: 300,
     ),
     34: GameTileEntity(
       index: 34,
-      title: "Start",
-      description: "New beginning.\nClaim RM200.",
+      title: "Lucky",
+      description: "Pick up money.\nGet RM200.",
       color: Colors.lightBlue,
       money: 200,
       debt: 0,
@@ -153,18 +153,18 @@ class GameTileUseCase extends ChangeNotifier {
     35: GameTileEntity(
       index: 35,
       title: "Lucky",
-      description: "You hit jackpot.\nClaim RM10000.",
+      description: "You hit jackpot.\nClaim RM1000.",
       color: Colors.purple,
-      money: 10000,
+      money: 1000,
       debt: 0,
     ),
     36: GameTileEntity(
       index: 36,
       title: "Unlucky",
-      description: "Lost your wallet.\nLose RM11000.",
+      description: "Lost your wallet.\nLose RM1100.",
       color: Colors.orange,
       money: 0,
-      debt: 11000,
+      debt: 1100,
     ),
   };
 
@@ -191,15 +191,19 @@ class GameTileUseCase extends ChangeNotifier {
     35,
     36
   ];
-  void moveToNext() {
+
+  bool moveToNext() {
     // Find the next available index greater than currentIndex
     int nextIndex = currentIndex + Random().nextInt(6) + 1;
     if (nextIndex < gameTileMap.length) {
       currentIndex = nextIndex;
+      notifyListeners();
+      return false;
     } else {
       currentIndex = 0;
+      notifyListeners();
+      return true;
     }
-    notifyListeners();
   }
 
   int getTileIndex() {
@@ -211,7 +215,7 @@ class GameTileUseCase extends ChangeNotifier {
     return gameTileEntity.money;
   }
 
-    double getTileDebt() {
+  double getTileDebt() {
     GameTileEntity gameTileEntity = gameTileMap[getTileIndex()]!;
     return gameTileEntity.debt;
   }
