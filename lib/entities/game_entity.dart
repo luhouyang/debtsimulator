@@ -5,6 +5,7 @@ class GameEntity {
   final String roomName;
   final String gameId;
   bool gameStatus; // 0 (not yet), 1 (started)
+  bool afked;
   int currentMove;
   int numPlayer;
   List<Map<String, dynamic>> chatLog;
@@ -15,6 +16,7 @@ class GameEntity {
       required this.gameId,
       required this.currentMove,
       required this.gameStatus,
+      required this.afked,
       required this.numPlayer,
       required this.chatLog,
       required this.playerList});
@@ -25,6 +27,7 @@ class GameEntity {
       gameId: map['gameId'] as String,
       currentMove: map['currentMove'] as int,
       gameStatus: map['gameStatus'] as bool,
+      afked: map['afked'] as bool,
       numPlayer: map['numPlayer'] as int,
       chatLog: List<Map<String, dynamic>>.from(map['chatLog'] ?? []),
       playerList: List<Map<String, dynamic>>.from(map['playerList']),
@@ -37,6 +40,7 @@ class GameEntity {
       'gameId': gameId,
       'currentMove': currentMove,
       'gameStatus': gameStatus,
+      'afked': afked,
       'numPlayer': numPlayer,
       'chatLog': chatLog,
       'playerList': playerList,

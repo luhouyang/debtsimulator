@@ -7,6 +7,7 @@ class GameStateUsecase extends ChangeNotifier {
   bool gameEnded = false;
 
   bool resetTimer = false;
+  bool afk = false;
   int currentMove = 0;
   double moveCountdown = 30000;
 
@@ -17,12 +18,14 @@ class GameStateUsecase extends ChangeNotifier {
 
   void setResetTimer() {
     moveCountdown = 30000;
-    notifyListeners();
   }
 
   void setCurrentMove(int move) {
     currentMove = move;
-    notifyListeners();
+  }
+
+  void setAfk(bool afked) {
+    afk = afked;
   }
 
   void updateCountdown() {
@@ -36,12 +39,12 @@ class GameStateUsecase extends ChangeNotifier {
   Future<void> updateCoundtdownGoAFK(
       PlayerEntity playerEntity, GameEntity gameEntity, int playerIndex) async {
     if (resetTimer) {
-      if (playerEntity.state == 1) {
+      if (playerEntity.state == 1 && !afk) {
         if (resetTimer) {
           playerEntity.afkCounter++;
+          gameEntity.afked = true;
         }
-        gameEntity.currentMove = gameEntity.currentMove +
-            1; // allow countdown to be resetted once without change in database
+        gameEntity.currentMove = gameEntity.currentMove + 1;
         resetTimer = false;
 
         playerEntity.state = 0;
@@ -103,12 +106,9 @@ class GameStateUsecase extends ChangeNotifier {
           });
         }
       } else {
-        if (gameEntity.currentMove != currentMove) {
-          resetTimer = false;
-          moveCountdown = 30000;
-          currentMove = gameEntity.currentMove;
-          notifyListeners();
-        }
+        resetTimer = false;
+        afk = false;
+        notifyListeners();
       }
     }
   }

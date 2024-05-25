@@ -24,10 +24,6 @@ class _GoButtonState extends State<GoButton> {
 
   void checkMoveCounter(GameStateUsecase gameStateUsecase) {
     timer = Timer.periodic(const Duration(milliseconds: 100), (timer) async {
-      if (gameStateUsecase.currentMove != widget.gameEntity.currentMove) {
-        gameStateUsecase.setCurrentMove(widget.gameEntity.currentMove);
-        gameStateUsecase.setResetTimer();
-      }
       gameStateUsecase.updateCountdown();
     });
   }
@@ -124,6 +120,7 @@ class _GoButtonState extends State<GoButton> {
         });
       } else {
         gameEntity.currentMove = gameEntity.currentMove + 1;
+        gameEntity.afked = false;
 
         PlayerEntity nextPlayerEntity =
             PlayerEntity.fromMap(gameEntity.playerList[nextPlayerIndex]);
