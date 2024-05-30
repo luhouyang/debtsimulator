@@ -105,7 +105,7 @@ class GameTileUseCase extends ChangeNotifier {
       index: 25,
       title: "Market Up",
       description:
-          "The stock market went up by 5%!\nClaim your dividend of RM200 if you invested.",
+          "The stock market went up by 5%!\nClaim RM200.",
       color: Colors.lightGreen,
       money: 200,
       debt: 0,

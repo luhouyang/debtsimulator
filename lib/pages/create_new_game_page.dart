@@ -74,6 +74,7 @@ class _CreateNewGamePageState extends State<CreateNewGamePage> {
                               gameId: newId,
                               currentMove: 0,
                               gameStatus: false,
+                              afked: false,
                               numPlayer: 1,
                               chatLog: [],
                               playerList: playerList)

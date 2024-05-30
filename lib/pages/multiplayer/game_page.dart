@@ -49,8 +49,8 @@ class _GamePageState extends State<GamePage> {
     UserUsecase userUsecase = Provider.of<UserUsecase>(context, listen: false);
 
     return Scaffold(
-      body: Consumer<GameTileUseCase>(
-        builder: (context, gameTileUseCase, child) {
+      body: Consumer2<GameTileUseCase, GameStateUsecase>(
+        builder: (context, gameTileUseCase, gameStateUsecase, child) {
           return StreamBuilder(
             stream: streamController.stream,
             initialData: widget.doc,
@@ -80,6 +80,12 @@ class _GamePageState extends State<GamePage> {
 
               PlayerEntity playerEntity =
                   PlayerEntity.fromMap(gameEntity.playerList[playerIndex]);
+
+              if (gameStateUsecase.currentMove != gameEntity.currentMove) {
+                gameStateUsecase.setCurrentMove(gameEntity.currentMove);
+                gameStateUsecase.setResetTimer();
+                gameStateUsecase.setAfk(gameEntity.afked);
+              }
 
               // widget
               return Scaffold(
@@ -123,66 +129,69 @@ class _GamePageState extends State<GamePage> {
                             )
                           ],
                         ),
-                        Stack(
-                          children: [
-                            GridView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-                              itemCount: 36,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisSpacing: 10,
-                                      mainAxisSpacing: 10,
-                                      crossAxisCount: 6,
-                                      childAspectRatio: 1),
-                              itemBuilder: (context, index) {
-                                // Condition to check if it's an outermost square
-                                if (index < 6 || // Top row
-                                        index % 6 == 0 || // Leftmost column
-                                        index % 6 == 5 || // Rightmost column
-                                        index > 29 // Bottom row
-                                    ) {
-                                  return GameTile(index: index);
-                                } else {
-                                  // Empty container for inner squares
-                                  return Container();
-                                }
-                              },
-                            ),
-                            Positioned(
-                              left: MediaQuery.of(context).size.width / 3 + 10,
-                              top: MediaQuery.of(context).size.width / 3 + 35,
-                              child: NeuContainer(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.white,
-                                height: 100,
-                                width: 100,
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.50,
+                          child: Stack(
+                            children: [
+                              GridView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                itemCount: 36,
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisSpacing: 10,
+                                        mainAxisSpacing: 10,
+                                        crossAxisCount: 6,
+                                        childAspectRatio: 1),
+                                itemBuilder: (context, index) {
+                                  // Condition to check if it's an outermost square
+                                  if (index < 6 || // Top row
+                                          index % 6 == 0 || // Leftmost column
+                                          index % 6 == 5 || // Rightmost column
+                                          index > 29 // Bottom row
+                                      ) {
+                                    return GameTile(index: index);
+                                  } else {
+                                    // Empty container for inner squares
+                                    return Container();
+                                  }
+                                },
                               ),
-                            ),
-                            Positioned(
-                              left: MediaQuery.of(context).size.width / 3,
-                              top: MediaQuery.of(context).size.width / 3 + 25,
-                              child: NeuContainer(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.white,
-                                height: 100,
-                                width: 100,
-                                child: Center(
-                                  child: Container(
-                                    decoration: const BoxDecoration(
-                                      color: Colors.black,
-                                      shape: BoxShape
-                                          .circle, // Make the dot a circle
+                              Positioned(
+                                left: MediaQuery.of(context).size.width / 3 + 10,
+                                top: MediaQuery.of(context).size.width / 3 + 35,
+                                child: NeuContainer(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.white,
+                                  height: 100,
+                                  width: 100,
+                                ),
+                              ),
+                              Positioned(
+                                left: MediaQuery.of(context).size.width / 3,
+                                top: MediaQuery.of(context).size.width / 3 + 25,
+                                child: NeuContainer(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.white,
+                                  height: 100,
+                                  width: 100,
+                                  child: Center(
+                                    child: Container(
+                                      decoration: const BoxDecoration(
+                                        color: Colors.black,
+                                        shape: BoxShape
+                                            .circle, // Make the dot a circle
+                                      ),
+                                      height:
+                                          20, // Adjust the size of the dot as needed
+                                      width: 20,
                                     ),
-                                    height:
-                                        20, // Adjust the size of the dot as needed
-                                    width: 20,
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                         const SizedBox(
                           height: 20,
