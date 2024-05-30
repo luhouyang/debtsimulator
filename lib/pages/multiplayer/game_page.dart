@@ -9,7 +9,6 @@ import 'package:debtsimulator/entities/user_entity.dart';
 import 'package:debtsimulator/pages/multiplayer/chat_button.dart';
 import 'package:debtsimulator/pages/multiplayer/go_button.dart';
 import 'package:debtsimulator/pages/multiplayer/status_button.dart';
-import 'package:debtsimulator/useCase/game_state_usecase.dart';
 import 'package:debtsimulator/useCase/game_tile_usecase.dart';
 import 'package:debtsimulator/useCase/user_usecase.dart';
 import 'package:firebase_auth/firebase_auth.dart';
