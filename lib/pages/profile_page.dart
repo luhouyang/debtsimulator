@@ -17,7 +17,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final Map<int, String> badges = {
     0: "assets/CREAM_badge.png",
-    1: "assets/FIRE_BASED_badge.png",
+    1: "assets/FIRE_BASED_Badge.png",
     2: "assets/monopoly.png",
     3: "assets/CREAM_badge.png",
     4: "assets/CREAM_badge.png",
@@ -54,9 +54,7 @@ class _ProfilePageState extends State<ProfilePage> {
           Align(
             alignment: Alignment.centerLeft,
             child: SizedBox(
-              child: IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.arrow_back_ios_new_rounded)),
+              child: IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.arrow_back_ios_new_rounded)),
             ),
           ),
           Container(
@@ -76,9 +74,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   bottom: 5,
                   child: Container(
                     decoration: BoxDecoration(
-                        boxShadow: const [
-                          BoxShadow(color: Colors.black, offset: Offset(0, 5))
-                        ],
+                        boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(0, 5))],
                         border: Border.all(width: 3),
                         borderRadius: BorderRadius.circular(50)),
                     margin: const EdgeInsets.all(5),
@@ -96,63 +92,42 @@ class _ProfilePageState extends State<ProfilePage> {
                                   backgroundColor: Colors.transparent,
                                   child: NeuContainer(
                                     color: Colors.white,
-                                    height: MediaQuery.of(context).size.height *
-                                        0.8,
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.9,
+                                    height: MediaQuery.of(context).size.height * 0.8,
+                                    width: MediaQuery.of(context).size.width * 0.9,
                                     child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Align(
                                           alignment: Alignment.centerLeft,
                                           child: SizedBox(
                                             child: IconButton(
-                                                onPressed: () =>
-                                                    Navigator.pop(context),
-                                                icon: const Icon(Icons
-                                                    .arrow_back_ios_new_rounded)),
+                                                onPressed: () => Navigator.pop(context), icon: const Icon(Icons.arrow_back_ios_new_rounded)),
                                           ),
                                         ),
                                         SizedBox(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.70,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.9,
+                                          height: MediaQuery.of(context).size.height * 0.70,
+                                          width: MediaQuery.of(context).size.width * 0.9,
                                           child: GridView.builder(
                                             padding: const EdgeInsets.all(8),
-                                            gridDelegate:
-                                                const SliverGridDelegateWithFixedCrossAxisCount(
-                                                    crossAxisSpacing: 10,
-                                                    mainAxisSpacing: 10,
-                                                    crossAxisCount: 3,
-                                                    childAspectRatio: 1),
+                                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                                crossAxisSpacing: 10, mainAxisSpacing: 10, crossAxisCount: 3, childAspectRatio: 1),
                                             itemCount: UserUsecase().avatars.length,
                                             itemBuilder: (context, index) {
                                               return InkWell(
                                                 onHover: (value) {},
                                                 onTap: () async {
-                                                  userUsecase.userEntity
-                                                      .profileIndex = index;
+                                                  userUsecase.userEntity.profileIndex = index;
                                                   await FirebaseFirestore.instance
                                                       .collection("users")
-                                                      .doc(userUsecase
-                                                          .userEntity.userId)
-                                                      .set(userUsecase
-                                                          .userEntity
-                                                          .toMap())
+                                                      .doc(userUsecase.userEntity.userId)
+                                                      .set(userUsecase.userEntity.toMap())
                                                       .then((value) {
                                                     Navigator.pop(context);
                                                     setState(() {});
                                                   });
                                                 },
                                                 child: NeuContainer(
-                                                  child: Image.asset(
-                                                      UserUsecase().avatars[index]!),
+                                                  child: Image.asset(UserUsecase().avatars[index]!),
                                                 ),
                                               );
                                             },
@@ -178,8 +153,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
           Container(
-            decoration:
-                BoxDecoration(borderRadius: BorderRadius.circular(32.0)),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(32.0)),
             child: Column(children: [
               Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
                 Padding(
@@ -187,16 +161,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: NeuTextButton(
                     enableAnimation: true,
                     onPressed: () async {
-                      UserEntity userEntity = UserEntity(
-                          userId: "",
-                          username: "",
-                          ongoingGame: "",
-                          profileIndex: 0,
-                          achievements: []);
+                      UserEntity userEntity = UserEntity(userId: "", username: "", ongoingGame: "", profileIndex: 0, achievements: []);
 
-                      await FirebaseAuthServices()
-                          .logout(userUsecase)
-                          .then((value) {
+                      await FirebaseAuthServices().logout(userUsecase).then((value) {
                         userUsecase.setUser(userEntity);
                       }).then((value) => Navigator.pop(context));
                     },
@@ -214,15 +181,11 @@ class _ProfilePageState extends State<ProfilePage> {
             height: MediaQuery.of(context).size.height * 0.55,
             child: GridView.builder(
               padding: const EdgeInsets.only(top: 6),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  crossAxisCount: 3,
-                  childAspectRatio: 1),
+              gridDelegate:
+                  const SliverGridDelegateWithFixedCrossAxisCount(crossAxisSpacing: 10, mainAxisSpacing: 10, crossAxisCount: 3, childAspectRatio: 1),
               itemCount: badges.length,
               itemBuilder: (context, index) {
-                List<int> listInt =
-                    List<int>.from(userUsecase.userEntity.achievements);
+                List<int> listInt = List<int>.from(userUsecase.userEntity.achievements);
                 if (listInt.contains(index)) {
                   return BadgeTiles(imagePath: badges[index]!);
                 } else {
