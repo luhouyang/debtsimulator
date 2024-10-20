@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:debtsimulator/entities/user_entity.dart';
 import 'package:debtsimulator/pages/create_new_game_page.dart';
 import 'package:debtsimulator/pages/game_page_solo.dart';
+import 'package:debtsimulator/pages/info_page.dart';
 import 'package:debtsimulator/pages/join_room_page.dart';
 import 'package:debtsimulator/pages/profile_page.dart';
 import 'package:debtsimulator/pages/waiting_room_page.dart';
@@ -23,10 +24,8 @@ class _GAMEMODEState extends State<GAMEMODE> {
     UserUsecase userUsecase = Provider.of<UserUsecase>(context, listen: false);
     if (userUsecase.userEntity.userId == "") {
       String uid = FirebaseAuth.instance.currentUser!.uid;
-      DocumentSnapshot doc =
-          await FirebaseFirestore.instance.collection("users").doc(uid).get();
-      userUsecase
-          .setUser(UserEntity.fromMap(doc.data() as Map<String, dynamic>));
+      DocumentSnapshot doc = await FirebaseFirestore.instance.collection("users").doc(uid).get();
+      userUsecase.setUser(UserEntity.fromMap(doc.data() as Map<String, dynamic>));
     }
   }
 
@@ -42,6 +41,7 @@ class _GAMEMODEState extends State<GAMEMODE> {
 
     return SafeArea(
         child: Scaffold(
+            resizeToAvoidBottomInset: false,
             backgroundColor: const Color.fromARGB(255, 229, 229, 229),
             body: SingleChildScrollView(
                 physics: const NeverScrollableScrollPhysics(),
@@ -51,20 +51,27 @@ class _GAMEMODEState extends State<GAMEMODE> {
                     children: [
                       Align(
                         alignment: Alignment.topRight,
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 25, top: 20),
-                          child: NeuContainer(
-                            color: Colors.white,
-                            width: 57,
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 5),
-                              child: Text(
-                                "?",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 28),
-                                textAlign: TextAlign.center,
+                        child: InkWell(
+                          onHover: (value) {},
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const InfoPage(),
+                                ));
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 25, top: 20),
+                            child: NeuContainer(
+                              color: Colors.white,
+                              width: 57,
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 5),
+                                child: Text(
+                                  "?",
+                                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 28),
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
                             ),
                           ),
@@ -89,8 +96,7 @@ class _GAMEMODEState extends State<GAMEMODE> {
                               ),
                               const Text(
                                 "PayDay",
-                                style: TextStyle(
-                                    fontSize: 32, fontWeight: FontWeight.bold),
+                                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
                               ),
                               const Text(
                                 "Gamified Financial Literacy App",
@@ -105,18 +111,11 @@ class _GAMEMODEState extends State<GAMEMODE> {
                                 enableAnimation: true,
                                 buttonColor: Colors.white,
                                 onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const GamePageSolo()));
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const GamePageSolo()));
                                 },
                                 text: const Text(
                                   "Solo Mode",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 28),
+                                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 28),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -127,21 +126,15 @@ class _GAMEMODEState extends State<GAMEMODE> {
                                 buttonHeight: 70,
                                 buttonWidth: 300,
                                 enableAnimation: true,
-                                buttonColor:
-                                    const Color.fromARGB(255, 243, 187, 65),
+                                buttonColor: const Color.fromARGB(255, 243, 187, 65),
                                 onPressed: () {
-                                  if (userUsecase.userEntity.userId.length <
-                                      5) {
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(SnackBar(
+                                  if (userUsecase.userEntity.userId.length < 5) {
+                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                       padding: EdgeInsets.zero,
                                       backgroundColor: Colors.grey[500],
                                       content: const Text(
                                         "Loading Data",
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 12),
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 12),
                                         textAlign: TextAlign.center,
                                       ),
                                     ));
@@ -150,18 +143,14 @@ class _GAMEMODEState extends State<GAMEMODE> {
                                       context: context,
                                       barrierDismissible: false,
                                       builder: (context) {
-                                        return multiplayerDialog(
-                                            userUsecase, context);
+                                        return multiplayerDialog(userUsecase, context);
                                       },
                                     );
                                   }
                                 },
                                 text: const Text(
                                   "Multiplayer Mode",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 28),
+                                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 28),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -170,21 +159,13 @@ class _GAMEMODEState extends State<GAMEMODE> {
                                 buttonHeight: 70,
                                 buttonWidth: 300,
                                 enableAnimation: true,
-                                buttonColor:
-                                    const Color.fromARGB(255, 190, 243, 65),
+                                buttonColor: const Color.fromARGB(255, 190, 243, 65),
                                 onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const ProfilePage()));
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfilePage()));
                                 },
                                 text: const Text(
                                   "Profile",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 28),
+                                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 28),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -197,8 +178,7 @@ class _GAMEMODEState extends State<GAMEMODE> {
                 ))));
   }
 
-  Dialog multiplayerDialog(
-      UserUsecase userUsecase, BuildContext parentContext) {
+  Dialog multiplayerDialog(UserUsecase userUsecase, BuildContext parentContext) {
     double heightSizedBox = MediaQuery.of(context).size.height * 0.05;
 
     return Dialog(
@@ -215,9 +195,7 @@ class _GAMEMODEState extends State<GAMEMODE> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: SizedBox(
-                      child: IconButton(
-                          onPressed: () => Navigator.pop(context),
-                          icon: const Icon(Icons.arrow_back_ios_new_rounded)),
+                      child: IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.arrow_back_ios_new_rounded)),
                     ),
                   ),
                   Expanded(
@@ -225,24 +203,16 @@ class _GAMEMODEState extends State<GAMEMODE> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         NeuTextButton(
-                          buttonHeight:
-                              MediaQuery.of(context).size.height * 0.1,
+                          buttonHeight: MediaQuery.of(context).size.height * 0.1,
                           buttonWidth: MediaQuery.of(context).size.width * 0.7,
                           enableAnimation: true,
                           onPressed: () {
                             Navigator.pop(context);
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const JoinRoomPage()));
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const JoinRoomPage()));
                           },
                           text: const Text(
                             "Join Game",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 28),
+                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 28),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -250,25 +220,17 @@ class _GAMEMODEState extends State<GAMEMODE> {
                           height: heightSizedBox,
                         ),
                         NeuTextButton(
-                          buttonHeight:
-                              MediaQuery.of(context).size.height * 0.1,
+                          buttonHeight: MediaQuery.of(context).size.height * 0.1,
                           buttonWidth: MediaQuery.of(context).size.width * 0.7,
                           enableAnimation: true,
                           buttonColor: Colors.red,
                           onPressed: () {
                             Navigator.pop(context);
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const CreateNewGamePage()));
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const CreateNewGamePage()));
                           },
                           text: const Text(
                             "New Game",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 28),
+                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 28),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -286,9 +248,7 @@ class _GAMEMODEState extends State<GAMEMODE> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: SizedBox(
-                      child: IconButton(
-                          onPressed: () => Navigator.pop(context),
-                          icon: const Icon(Icons.arrow_back_ios_new_rounded)),
+                      child: IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.arrow_back_ios_new_rounded)),
                     ),
                   ),
                   Expanded(
@@ -296,33 +256,24 @@ class _GAMEMODEState extends State<GAMEMODE> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         NeuTextButton(
-                          buttonHeight:
-                              MediaQuery.of(context).size.height * 0.1,
+                          buttonHeight: MediaQuery.of(context).size.height * 0.1,
                           buttonWidth: MediaQuery.of(context).size.width * 0.7,
                           enableAnimation: true,
                           onPressed: () async {
-                            await FirebaseFirestore.instance
-                                .collection("games")
-                                .doc(userUsecase.userEntity.ongoingGame)
-                                .get()
-                                .then((value) {
+                            await FirebaseFirestore.instance.collection("games").doc(userUsecase.userEntity.ongoingGame).get().then((value) {
                               Navigator.pop(context);
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => WaitingRoomPage(
-                                            gameId: userUsecase
-                                                .userEntity.ongoingGame,
+                                            gameId: userUsecase.userEntity.ongoingGame,
                                             doc: value,
                                           )));
                             });
                           },
                           text: const Text(
                             "Continue Game",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 28),
+                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 28),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -331,38 +282,26 @@ class _GAMEMODEState extends State<GAMEMODE> {
                         ),
                         NeuTextButton(
                           buttonColor: Colors.blue,
-                          buttonHeight:
-                              MediaQuery.of(context).size.height * 0.1,
+                          buttonHeight: MediaQuery.of(context).size.height * 0.1,
                           buttonWidth: MediaQuery.of(context).size.width * 0.7,
                           enableAnimation: true,
                           onPressed: () async {
                             String uid = FirebaseAuth.instance.currentUser!.uid;
-                            DocumentSnapshot doc = await FirebaseFirestore
-                                .instance
-                                .collection("users")
-                                .doc(uid)
-                                .get();
-                            userUsecase
-                                .setUser(UserEntity.fromMap(
-                                    doc.data() as Map<String, dynamic>))
-                                .then((value) {
+                            DocumentSnapshot doc = await FirebaseFirestore.instance.collection("users").doc(uid).get();
+                            userUsecase.setUser(UserEntity.fromMap(doc.data() as Map<String, dynamic>)).then((value) {
                               Navigator.pop(context);
                               showDialog(
                                 context: parentContext,
                                 barrierDismissible: false,
                                 builder: (context) {
-                                  return multiplayerDialog(
-                                      userUsecase, context);
+                                  return multiplayerDialog(userUsecase, context);
                                 },
                               );
                             });
                           },
                           text: const Text(
                             "Refresh",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 28),
+                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 28),
                             textAlign: TextAlign.center,
                           ),
                         ),

@@ -18,18 +18,19 @@ class AuthStream extends StatelessWidget {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Scaffold(
+                resizeToAvoidBottomInset: false,
                 body: Center(
-                  child: LoadingAnimationWidget.discreteCircle(
-                      color: Colors.blue, size: 40.0),
+                  child: LoadingAnimationWidget.discreteCircle(color: Colors.blue, size: 40.0),
                 ),
               );
             } else if (snapshot.hasData /* && !value.isGoogleOAuthLoading*/) {
-              return const SafeArea(child: GAMEMODE(),);
+              return const SafeArea(
+                child: GAMEMODE(),
+              );
             } else if (value.isLoading) {
               return Scaffold(
                 body: Center(
-                  child: LoadingAnimationWidget.discreteCircle(
-                      color: Colors.blue, size: 40.0),
+                  child: LoadingAnimationWidget.discreteCircle(color: Colors.blue, size: 40.0),
                 ),
               );
             } else {

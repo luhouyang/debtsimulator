@@ -48,8 +48,7 @@ class _ChatButtonState extends State<ChatButton> {
     return value != null ? "" : "Please enter chat";
   }
 
-  Widget inputTextWidget(
-      String hint, Function validator, TextEditingController controller) {
+  Widget inputTextWidget(String hint, Function validator, TextEditingController controller) {
     return Padding(
         padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
         child: NeuContainer(
@@ -72,10 +71,8 @@ class _ChatButtonState extends State<ChatButton> {
         ));
   }
 
-  Dialog chatDialog(GameEntity gameEntity, UserUsecase userUsecase,
-      BuildContext parentContext) {
-    List<ChatEntity> chatLog = List.from(
-        gameEntity.chatLog.map((element) => ChatEntity.fromMap(element)));
+  Dialog chatDialog(GameEntity gameEntity, UserUsecase userUsecase, BuildContext parentContext) {
+    List<ChatEntity> chatLog = List.from(gameEntity.chatLog.map((element) => ChatEntity.fromMap(element)));
 
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -93,9 +90,7 @@ class _ChatButtonState extends State<ChatButton> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: SizedBox(
-                    child: IconButton(
-                        onPressed: () => Navigator.pop(context),
-                        icon: const Icon(Icons.arrow_back_ios_new_rounded)),
+                    child: IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.arrow_back_ios_new_rounded)),
                   ),
                 ),
                 NeuContainer(
@@ -104,8 +99,7 @@ class _ChatButtonState extends State<ChatButton> {
                   child: ListView.builder(
                     itemCount: chatLog.length,
                     itemBuilder: (context, index) {
-                      return chatLog[index].userId ==
-                              userUsecase.userEntity.userId
+                      return chatLog[index].userId == userUsecase.userEntity.userId
                           ? Align(
                               alignment: Alignment.centerRight,
                               child: Padding(
@@ -117,10 +111,7 @@ class _ChatButtonState extends State<ChatButton> {
                                     padding: const EdgeInsets.all(2),
                                     child: Text(
                                       "${chatLog[index].username}:\n${chatLog[index].chat}",
-                                      style: const TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16),
+                                      style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
                                       textAlign: TextAlign.left,
                                     ),
                                   ),
@@ -138,10 +129,7 @@ class _ChatButtonState extends State<ChatButton> {
                                     padding: const EdgeInsets.all(2),
                                     child: Text(
                                       "${chatLog[index].username}:\n${chatLog[index].chat}",
-                                      style: const TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16),
+                                      style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
                                       textAlign: TextAlign.left,
                                     ),
                                   ),
@@ -151,8 +139,7 @@ class _ChatButtonState extends State<ChatButton> {
                     },
                   ),
                 ),
-                inputTextWidget(
-                    "chat message...", chatVerify, chatTextController),
+                inputTextWidget("chat message...", chatVerify, chatTextController),
                 Padding(
                   padding: const EdgeInsets.only(top: 16),
                   child: NeuTextButton(
@@ -165,14 +152,10 @@ class _ChatButtonState extends State<ChatButton> {
                           username: userUsecase.userEntity.username,
                           chat: chatTextController.text,
                           profileIndex: userUsecase.userEntity.profileIndex);
-        
+
                       gameEntity.chatLog.add(chatEntity.toMap());
-        
-                      await FirebaseFirestore.instance
-                          .collection("games")
-                          .doc(widget.gameEntity.gameId)
-                          .set(gameEntity.toMap())
-                          .then((value) {
+
+                      await FirebaseFirestore.instance.collection("games").doc(widget.gameEntity.gameId).set(gameEntity.toMap()).then((value) {
                         chatTextController.clear();
                         Navigator.pop(context);
                         showDialog(
@@ -186,10 +169,7 @@ class _ChatButtonState extends State<ChatButton> {
                     },
                     text: const Text(
                       "Send Chat",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 28),
+                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 28),
                       textAlign: TextAlign.center,
                     ),
                   ),

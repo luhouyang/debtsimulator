@@ -20,6 +20,7 @@ class _GamePageSoloState extends State<GamePageSolo> {
     return Consumer<GameTileUseCase>(
       builder: (context, value, child) {
         return Scaffold(
+          resizeToAvoidBottomInset: false,
           backgroundColor: Colors.grey[300],
           body: Padding(
             padding: const EdgeInsets.all(12),
@@ -36,8 +37,7 @@ class _GamePageSoloState extends State<GamePageSolo> {
                       width: double.infinity,
                       child: Text(
                         value.gameTileMap[value.getTileIndex()]!.title,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w900, fontSize: 28),
+                        style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 28),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -59,12 +59,8 @@ class _GamePageSoloState extends State<GamePageSolo> {
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
                       itemCount: 36,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisSpacing: 10,
-                              mainAxisSpacing: 10,
-                              crossAxisCount: 6,
-                              childAspectRatio: 1),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisSpacing: 10, mainAxisSpacing: 10, crossAxisCount: 6, childAspectRatio: 1),
                       itemBuilder: (context, index) {
                         // Condition to check if it's an outermost square
                         if (index < 6 || // Top row
@@ -135,10 +131,7 @@ class _GamePageSoloState extends State<GamePageSolo> {
                         padding: EdgeInsets.symmetric(vertical: 10),
                         child: Text(
                           "???",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 28),
+                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 28),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -202,29 +195,18 @@ class _GamePageSoloState extends State<GamePageSolo> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                MoneyCard(
-                    text: "\$",
-                    amount: "900",
-                    iconColor: Colors.orange,
-                    textColor: Colors.black),
+                MoneyCard(text: "\$", amount: "900", iconColor: Colors.orange, textColor: Colors.black),
                 SizedBox(
                   width: 70,
                 ),
-                MoneyCard(
-                    text: "!",
-                    amount: "-100",
-                    iconColor: Colors.red,
-                    textColor: Colors.red),
+                MoneyCard(text: "!", amount: "-100", iconColor: Colors.red, textColor: Colors.red),
               ],
             ),
           ),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerDocked,
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
           floatingActionButton: Container(
             decoration: BoxDecoration(
-                boxShadow: const [
-                  BoxShadow(color: Colors.black, offset: Offset(0, 5))
-                ],
+                boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(0, 5))],
                 border: Border.all(width: 3),
                 borderRadius: BorderRadius.circular(50)),
             margin: const EdgeInsets.all(5),
@@ -240,10 +222,7 @@ class _GamePageSoloState extends State<GamePageSolo> {
                 shape: const CircleBorder(),
                 child: const Text(
                   "GO",
-                  style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
               ),
             ),
@@ -262,9 +241,7 @@ class _GamePageSoloState extends State<GamePageSolo> {
           children: [
             Container(
               decoration: BoxDecoration(
-                  boxShadow: const [
-                    BoxShadow(color: Colors.black, offset: Offset(0, 5))
-                  ],
+                  boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(0, 5))],
                   border: Border.all(width: 3),
                   borderRadius: BorderRadius.circular(50)),
               margin: const EdgeInsets.all(5),
@@ -283,10 +260,7 @@ class _GamePageSoloState extends State<GamePageSolo> {
               children: [
                 Text(
                   "Players 1",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold),
+                  style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 Text(
                   "Money: ",
@@ -308,8 +282,7 @@ class _GamePageSoloState extends State<GamePageSolo> {
     return value != null ? "" : "Please enter chat";
   }
 
-  Widget inputTextWidget(
-      String hint, Function validator, TextEditingController controller) {
+  Widget inputTextWidget(String hint, Function validator, TextEditingController controller) {
     return Padding(
         padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
         child: NeuContainer(
@@ -336,89 +309,83 @@ class _GamePageSoloState extends State<GamePageSolo> {
     return Dialog(
       backgroundColor: Colors.transparent,
       shadowColor: Colors.transparent,
-      child: NeuContainer(
-        color: Colors.white,
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-          child: Column(
-            children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: SizedBox(
-                  child: IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: const Icon(Icons.arrow_back_ios_new_rounded)),
-                ),
-              ),
-              NeuContainer(
-                color: Colors.grey[200],
-                height: MediaQuery.of(context).size.height * 0.6,
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.all(4),
-                        child: NeuContainer(
-                          color: Colors.lightBlue,
-                          width: MediaQuery.of(context).size.width * 0.4,
-                          child: const Text(
-                              "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"),
-                        ),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.all(4),
-                        child: NeuContainer(
-                          color: Colors.lightBlue,
-                          width: MediaQuery.of(context).size.width * 0.4,
-                          child: const Text(
-                              "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"),
-                        ),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Padding(
-                        padding: const EdgeInsets.all(4),
-                        child: NeuContainer(
-                          color: Colors.amber,
-                          width: MediaQuery.of(context).size.width * 0.4,
-                          child: const Text(
-                              "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              inputTextWidget(
-                  "chat message...", chatVerify, chatTextController),
-              Padding(
-                padding: const EdgeInsets.only(top: 16),
-                child: NeuTextButton(
-                  buttonHeight: MediaQuery.of(context).size.height * 0.07,
-                  buttonWidth: MediaQuery.of(context).size.width,
-                  enableAnimation: true,
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  text: const Text(
-                    "Send Chat",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 28),
-                    textAlign: TextAlign.center,
+      child: SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
+        child: NeuContainer(
+          color: Colors.white,
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+            child: Column(
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: SizedBox(
+                    child: IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.arrow_back_ios_new_rounded)),
                   ),
                 ),
-              ),
-            ],
+                NeuContainer(
+                  color: Colors.grey[200],
+                  height: MediaQuery.of(context).size.height * 0.6,
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.all(4),
+                          child: NeuContainer(
+                            color: Colors.lightBlue,
+                            width: MediaQuery.of(context).size.width * 0.4,
+                            child: const Text("Text 1"),
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.all(4),
+                          child: NeuContainer(
+                            color: Colors.lightBlue,
+                            width: MediaQuery.of(context).size.width * 0.4,
+                            child: const Text("Text 2"),
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                          padding: const EdgeInsets.all(4),
+                          child: NeuContainer(
+                            color: Colors.amber,
+                            width: MediaQuery.of(context).size.width * 0.4,
+                            child: const Text("Visit me at: https://www.luhouyang.com"),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                inputTextWidget("chat message...", chatVerify, chatTextController),
+                Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: NeuTextButton(
+                    buttonHeight: MediaQuery.of(context).size.height * 0.07,
+                    buttonWidth: MediaQuery.of(context).size.width,
+                    enableAnimation: true,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    text: const Text(
+                      "Send Chat",
+                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 28),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -438,9 +405,7 @@ class _GamePageSoloState extends State<GamePageSolo> {
             Align(
               alignment: Alignment.centerLeft,
               child: SizedBox(
-                child: IconButton(
-                    onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.arrow_back_ios_new_rounded)),
+                child: IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.arrow_back_ios_new_rounded)),
               ),
             ),
             playerStatus(),
