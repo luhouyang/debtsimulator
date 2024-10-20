@@ -9,6 +9,7 @@ import 'package:debtsimulator/entities/user_entity.dart';
 import 'package:debtsimulator/pages/multiplayer/chat_button.dart';
 import 'package:debtsimulator/pages/multiplayer/go_button.dart';
 import 'package:debtsimulator/pages/multiplayer/status_button.dart';
+import 'package:debtsimulator/useCase/game_state_usecase.dart';
 import 'package:debtsimulator/useCase/game_tile_usecase.dart';
 import 'package:debtsimulator/useCase/user_usecase.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -60,16 +61,14 @@ class _GamePageState extends State<GamePage> {
                 return Center(child: Text("Error: ${snapshot.error}"));
               } else if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(
-                  child: LoadingAnimationWidget.discreteCircle(
-                      color: Colors.blue, size: 40.0),
+                  child: LoadingAnimationWidget.discreteCircle(color: Colors.blue, size: 40.0),
                 );
               }
               if (!snapshot.hasData || snapshot.data!.data() == null) {
                 return noDataGameEnd(userUsecase);
               }
               // game logic
-              GameEntity gameEntity = GameEntity.fromMap(
-                  snapshot.data!.data() as Map<String, dynamic>);
+              GameEntity gameEntity = GameEntity.fromMap(snapshot.data!.data() as Map<String, dynamic>);
 
               int playerIndex = 0;
               gameEntity.playerList.asMap().forEach((key, value) {
@@ -78,8 +77,7 @@ class _GamePageState extends State<GamePage> {
                 }
               });
 
-              PlayerEntity playerEntity =
-                  PlayerEntity.fromMap(gameEntity.playerList[playerIndex]);
+              PlayerEntity playerEntity = PlayerEntity.fromMap(gameEntity.playerList[playerIndex]);
 
               if (gameStateUsecase.currentMove != gameEntity.currentMove) {
                 gameStateUsecase.setCurrentMove(gameEntity.currentMove);
@@ -101,17 +99,11 @@ class _GamePageState extends State<GamePage> {
                         Column(
                           children: [
                             NeuContainer(
-                              color: gameTileUseCase
-                                  .gameTileMap[gameTileUseCase.getTileIndex()]!
-                                  .color,
+                              color: gameTileUseCase.gameTileMap[gameTileUseCase.getTileIndex()]!.color,
                               width: double.infinity,
                               child: Text(
-                                gameTileUseCase
-                                    .gameTileMap[
-                                        gameTileUseCase.getTileIndex()]!
-                                    .title,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w900, fontSize: 28),
+                                gameTileUseCase.gameTileMap[gameTileUseCase.getTileIndex()]!.title,
+                                style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 28),
                                 textAlign: TextAlign.center,
                               ),
                             ),
@@ -120,10 +112,7 @@ class _GamePageState extends State<GamePage> {
                               color: Colors.white,
                               child: Text(
                                 style: const TextStyle(fontSize: 18),
-                                gameTileUseCase
-                                    .gameTileMap[
-                                        gameTileUseCase.getTileIndex()]!
-                                    .description,
+                                gameTileUseCase.gameTileMap[gameTileUseCase.getTileIndex()]!.description,
                                 textAlign: TextAlign.center,
                               ),
                             )
@@ -138,12 +127,8 @@ class _GamePageState extends State<GamePage> {
                                 scrollDirection: Axis.vertical,
                                 shrinkWrap: true,
                                 itemCount: 36,
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisSpacing: 10,
-                                        mainAxisSpacing: 10,
-                                        crossAxisCount: 6,
-                                        childAspectRatio: 1),
+                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisSpacing: 10, mainAxisSpacing: 10, crossAxisCount: 6, childAspectRatio: 1),
                                 itemBuilder: (context, index) {
                                   // Condition to check if it's an outermost square
                                   if (index < 6 || // Top row
@@ -180,11 +165,9 @@ class _GamePageState extends State<GamePage> {
                                     child: Container(
                                       decoration: const BoxDecoration(
                                         color: Colors.black,
-                                        shape: BoxShape
-                                            .circle, // Make the dot a circle
+                                        shape: BoxShape.circle, // Make the dot a circle
                                       ),
-                                      height:
-                                          20, // Adjust the size of the dot as needed
+                                      height: 20, // Adjust the size of the dot as needed
                                       width: 20,
                                     ),
                                   ),
@@ -194,7 +177,7 @@ class _GamePageState extends State<GamePage> {
                           ),
                         ),
                         const SizedBox(
-                          height: 20,
+                          height: 10,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -203,7 +186,7 @@ class _GamePageState extends State<GamePage> {
                               color: Colors.amberAccent,
                               width: 150,
                               child: const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 10),
+                                padding: EdgeInsets.symmetric(vertical: 8),
                                 child: Text(
                                   "Financial\nAdvice",
                                   textAlign: TextAlign.center,
@@ -214,13 +197,10 @@ class _GamePageState extends State<GamePage> {
                               color: Colors.purple[800],
                               width: 150,
                               child: const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 10),
+                                padding: EdgeInsets.symmetric(vertical: 8),
                                 child: Text(
                                   "???",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 28),
+                                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 28),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -228,7 +208,7 @@ class _GamePageState extends State<GamePage> {
                           ],
                         ),
                         const SizedBox(
-                          height: 20,
+                          height: 10,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -253,29 +233,19 @@ class _GamePageState extends State<GamePage> {
                         ? const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              UIsDead(
-                                  text: "no moneyyy", textColor: Colors.black),
+                              UIsDead(text: "no moneyyy", textColor: Colors.black),
                               UIsDead(text: "you broke", textColor: Colors.red),
                             ],
                           )
                         : Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              MoneyCard(
-                                  text: "\$",
-                                  amount: playerEntity.money.toString(),
-                                  iconColor: Colors.orange,
-                                  textColor: Colors.black),
-                              MoneyCard(
-                                  text: "!-",
-                                  amount: playerEntity.debt.toString(),
-                                  iconColor: Colors.red,
-                                  textColor: Colors.red),
+                              MoneyCard(text: "\$", amount: playerEntity.money.toString(), iconColor: Colors.orange, textColor: Colors.black),
+                              MoneyCard(text: "!-", amount: playerEntity.debt.toString(), iconColor: Colors.red, textColor: Colors.red),
                             ],
                           ),
                   ),
-                  floatingActionButtonLocation:
-                      FloatingActionButtonLocation.centerDocked,
+                  floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
                   floatingActionButton: GoButton(
                     playerIndex: playerIndex,
                     gameEntity: gameEntity,
@@ -310,23 +280,14 @@ class _GamePageState extends State<GamePage> {
             enableAnimation: true,
             onPressed: () async {
               String uid = FirebaseAuth.instance.currentUser!.uid;
-              DocumentSnapshot doc = await FirebaseFirestore.instance
-                  .collection("users")
-                  .doc(uid)
-                  .get();
-              userUsecase
-                  .setUser(
-                      UserEntity.fromMap(doc.data() as Map<String, dynamic>))
-                  .then((value) {
+              DocumentSnapshot doc = await FirebaseFirestore.instance.collection("users").doc(uid).get();
+              userUsecase.setUser(UserEntity.fromMap(doc.data() as Map<String, dynamic>)).then((value) {
                 Navigator.pop(context);
               });
             },
             text: const Text(
               "Refresh",
-              style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 28),
+              style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 28),
               textAlign: TextAlign.center,
             ),
           ),

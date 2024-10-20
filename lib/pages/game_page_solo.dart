@@ -108,7 +108,7 @@ class _GamePageSoloState extends State<GamePageSolo> {
                   ],
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 10,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -117,7 +117,7 @@ class _GamePageSoloState extends State<GamePageSolo> {
                       color: Colors.amberAccent,
                       width: 150,
                       child: const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10),
+                        padding: EdgeInsets.symmetric(vertical: 8),
                         child: Text(
                           "Financial\nAdvice",
                           textAlign: TextAlign.center,
@@ -128,7 +128,7 @@ class _GamePageSoloState extends State<GamePageSolo> {
                       color: Colors.purple[800],
                       width: 150,
                       child: const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10),
+                        padding: EdgeInsets.symmetric(vertical: 8),
                         child: Text(
                           "???",
                           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 28),
@@ -139,7 +139,7 @@ class _GamePageSoloState extends State<GamePageSolo> {
                   ],
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 10,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
